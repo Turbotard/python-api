@@ -8,10 +8,7 @@ Pour créer l'environnement virtuel, suivez ces étapes :
 
 1. Ouvrez un terminal dans le répertoire de ce projet.
 
-2. Utilisez la commande suivante pour créer un environnement virtuel nommé "env" (vous pouvez choisir un autre nom si vous le souhaitez) :
-
-3. Activez l'environnement virtuel en fonction de votre système d'exploitation :
-Une fois l'environnement virtuel activé, vous pouvez installer les dépendances du projet à l'aide de pip :
+2. Utilisez la commande suivante pour créer un environnement virtuel nommé "env" : $ python -m venv env
 
 ## Lancement du projet
 
