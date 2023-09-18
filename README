@@ -1,5 +1,0 @@
-Il faut taper la commande si dessous afin de créer un environment virtuel
-$ python -m venv env
-ainsi que
-uvicorn main:app --reload
-pour lancer le projet
