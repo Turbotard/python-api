@@ -2,10 +2,10 @@ from fastapi import APIRouter
 from shared import request_counts
 from api import data
 
-
 data_router = APIRouter()
 
-@data_router.get("/data")
+
+@data_router.get("countries/cities/weathers")
 def get_all_data():
     """
     Route pour consulter toutes les données météorologiques.

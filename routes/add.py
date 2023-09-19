@@ -4,8 +4,8 @@ from api import data
 from weather_entry import WeatherEntry
 import json
 
-
 add_router = APIRouter()
+
 
 @add_router.post("/countries/cities/weathers/{id}")
 def add_entry(new_entry: WeatherEntry):

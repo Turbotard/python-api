@@ -5,7 +5,8 @@ import json
 
 delete_router = APIRouter()
 
-@delete_router.delete("/data/delete-entry")
+
+@delete_router.delete("/countries/cities/weathers/{id}")
 def delete_entry(date_to_delete: str):
     """
     Route pour supprimer une entrée de données par date.

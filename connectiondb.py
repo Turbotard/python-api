@@ -20,4 +20,3 @@ finally:
     if db.is_connected():
         db.close()
         print("Connexion à la base de données fermée.")
-

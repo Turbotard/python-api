@@ -4,10 +4,10 @@ from fastapi import APIRouter
 from shared import request_counts
 from api import data
 
-
 date_router = APIRouter()
 
-@date_router.get("/data/filter-by-date")
+
+@date_router.get("/countries/cities/weathers/{date}")
 def filter_by_date(start_date: str, end_date: str, order: str = "asc"):
     """
     Route pour filtrer les données par plage de dates.

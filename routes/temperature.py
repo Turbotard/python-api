@@ -2,10 +2,10 @@ from fastapi import APIRouter
 from shared import request_counts
 from api import data
 
-
 temperature_router = APIRouter()
 
-@temperature_router.get("/data/filter-by-temperature")
+
+@temperature_router.get("/countries/cities/weathers/{temp}")
 def filter_by_precipitation(temp: float, order: str = "asc"):
     """
     Route pour filtrer les données par température trié par rapport au min

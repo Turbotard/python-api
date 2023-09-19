@@ -6,7 +6,8 @@ from api import data
 
 precipitation_router = APIRouter()
 
-@precipitation_router.get("/data/filter-by-precipitation")
+
+@precipitation_router.get("/countries/cities/weathers/{prcp}")
 def filter_by_precipitation(min_prcp: Optional[float] = None, max_prcp: Optional[float] = None, order: str = "asc"):
     """
     Route pour filtrer les données par plage de précipitations.

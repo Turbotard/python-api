@@ -3,11 +3,12 @@ from shared import request_counts
 
 statistics_router = APIRouter()
 
-@statistics_router.get("/data/statistics")
+
+@statistics_router.get("/statistics")
 def stats():
     """
     Route qui affiche le nombres de requètes faites pour chaques route
-
+|
     Returns:
         request_count : renvoie des counters des utilisations de chaques routes
 

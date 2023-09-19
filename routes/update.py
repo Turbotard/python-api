@@ -7,7 +7,8 @@ from api import data
 
 update_router = APIRouter()
 
-@update_router.put("/data/update-entry")
+
+@update_router.put("/countries/cities/weathers/{id}")
 def update_entry(updated_entry: WeatherEntry):
     """
     Route pour mettre à jour une entrée de données par date.
