@@ -20,6 +20,16 @@ request_counts = {
     'delete_entry': 0,
     'update_entry': 0,
 }
+from datetime import datetime
+
+from fastapi import FastAPI
+import json
+
+with open('rdu-weather-history.json') as test:
+    data = json.load(test)
+print(data)
+
+app = FastAPI()
 
 
 class WeatherEntry(BaseModel):
@@ -69,7 +79,7 @@ def get_all_data():
 
 
 @app.get("/data/filter-by-date")
-def filter_by_date(start_date: str, end_date: str):
+def filter_by_date(start_date: str, end_date: str, order: str = "asc"):
     """
     Route pour filtrer les données par plage de dates.
 
@@ -82,11 +92,13 @@ def filter_by_date(start_date: str, end_date: str):
     """
     request_counts['filter_by_date'] += 1
     filtered_data = [entry for entry in data if start_date <= entry['date'] <= end_date]
-    return {"request_count": request_counts['filter_by_date'], "filtered_data": filtered_data}
+    sorted_data = sorted(filtered_data, key=lambda x: datetime.strptime(x["date"], "%Y-%m-%d"), reverse=(order == "desc"))
+
+    return {"request_count": request_counts['filter_by_date'], "filtered_data": sorted_data}
 
 
 @app.get("/data/filter-by-precipitation")
-def filter_by_precipitation(min_prcp: Optional[float] = None, max_prcp: Optional[float] = None):
+def filter_by_precipitation(min_prcp: Optional[float] = None, max_prcp: Optional[float] = None, order: str = "asc"):
     """
     Route pour filtrer les données par plage de précipitations.
 
@@ -102,13 +114,34 @@ def filter_by_precipitation(min_prcp: Optional[float] = None, max_prcp: Optional
         return {"request_count": request_counts['filter_by_precipitation'], "data": data}
 
     filtered_data = []
+
     for entry in data:
         prcp = entry.get('prcp')
         if prcp is not None and (min_prcp is None or prcp >= min_prcp) and (max_prcp is None or prcp <= max_prcp):
             filtered_data.append(entry)
+    sorted_data = sorted(filtered_data, key=lambda x: x["prcp"], reverse=(order == "desc"))
+    return {"request_count": request_counts['filter_by_precipitation'], "filtered_data": sorted_data}
 
-    return {"request_count": request_counts['filter_by_precipitation'], "filtered_data": filtered_data}
 
+@app.get("/data/filter-by-temperature")
+def filter_by_precipitation(temp: float, order: str = "asc"):
+    """
+
+    Args:
+        temp:
+        order:
+
+    Returns:
+
+    """
+    filtered_data = []
+    for entry in data:
+        tmin = entry.get('tmin')
+        tmax = entry.get('tmax')
+        if temp >= tmin and temp <= tmax:
+            filtered_data.append(entry)
+    sorted_data = sorted(filtered_data, key=lambda x: x["tmin"], reverse=(order == "desc"))
+    return {"request_count": request_counts['filter_by_precipitation'], "filtered_data": sorted_data}
 
 @app.post("/data/add-entry")
 def add_entry(new_entry: WeatherEntry):
