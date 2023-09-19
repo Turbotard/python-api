@@ -165,3 +165,13 @@ def update_entry(updated_entry: WeatherEntry):
         json.dump(data, file, indent=4)
     return {"request_count": request_counts['update_entry'],
             "message": f"Entrée avec date {date_to_update} mise à jour avec succès!"}
+
+@app.get("/data/statistics")
+def stats():
+    return {"request_count_root": request_counts['root'],
+            "request_count_all_data": request_counts['get_all_data'],
+            "request_count_filter_by_date": request_counts['filter_by_date'],
+            "request_count_filter_by_precipitation": request_counts['filter_by_precipitation'],
+            "request_count_add_entry": request_counts['add_entry'],
+            "request_count_delete_entry": request_counts['delete_entry'],
+            "request_count_update_entry": request_counts['update_entry']}
