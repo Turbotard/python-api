@@ -168,6 +168,12 @@ def update_entry(updated_entry: WeatherEntry):
 
 @app.get("/data/statistics")
 def stats():
+    """
+
+    Returns:
+        request_count : renvoie des counters des utilisations de chaques routes
+
+    """
     return {"request_count_root": request_counts['root'],
             "request_count_all_data": request_counts['get_all_data'],
             "request_count_filter_by_date": request_counts['filter_by_date'],
