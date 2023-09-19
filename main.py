@@ -105,7 +105,7 @@ def filter_by_precipitation(min_prcp: Optional[float] = None, max_prcp: Optional
     Args:
         min_prcp (float, optional): La valeur minimale des précipitations en pouces.
         max_prcp (float, optional): La valeur maximale des précipitations en pouces.
-
+        order (string): trie la valeure soit asc pour croissant soit desc pour décroissant
     Returns:
         dict: Le nombre de requêtes traitées et une liste d'entrées de données filtrées en fonction des précipitations spécifiées.
     """
@@ -126,13 +126,14 @@ def filter_by_precipitation(min_prcp: Optional[float] = None, max_prcp: Optional
 @app.get("/data/filter-by-temperature")
 def filter_by_precipitation(temp: float, order: str = "asc"):
     """
+    Route pour filtrer les données par température trié par rapport au min
 
     Args:
-        temp:
-        order:
+        temp: (float) Temparature
+        order (string): trie la valeure soit asc pour croissant soit desc pour décroissant
 
     Returns:
-
+        dict : les températurs filtrés entre tmin et tmax
     """
     filtered_data = []
     for entry in data:
@@ -202,6 +203,7 @@ def update_entry(updated_entry: WeatherEntry):
 @app.get("/data/statistics")
 def stats():
     """
+    Route qui affiche le nombres de requètes faites pour chaques route
 
     Returns:
         request_count : renvoie des counters des utilisations de chaques routes
