@@ -7,7 +7,7 @@ import json
 
 add_router = APIRouter()
 
-@add_router.post("/data/add-entry")
+@add_router.post("/countries/cities/weathers/{id}")
 def add_entry(new_entry: WeatherEntry):
     """
     Route pour ajouter une nouvelle entrée de données.
