@@ -92,7 +92,8 @@ def filter_by_date(start_date: str, end_date: str, order: str = "asc"):
     """
     request_counts['filter_by_date'] += 1
     filtered_data = [entry for entry in data if start_date <= entry['date'] <= end_date]
-    sorted_data = sorted(filtered_data, key=lambda x: datetime.strptime(x["date"], "%Y-%m-%d"), reverse=(order == "desc"))
+    sorted_data = sorted(filtered_data, key=lambda x: datetime.strptime(x["date"], "%Y-%m-%d"),
+                         reverse=(order == "desc"))
 
     return {"request_count": request_counts['filter_by_date'], "filtered_data": sorted_data}
 
@@ -143,6 +144,7 @@ def filter_by_precipitation(temp: float, order: str = "asc"):
             filtered_data.append(entry)
     sorted_data = sorted(filtered_data, key=lambda x: x["tmin"], reverse=(order == "desc"))
     return {"request_count": request_counts['filter_by_precipitation'], "filtered_data": sorted_data}
+
 
 @app.post("/data/add-entry")
 def add_entry(new_entry: WeatherEntry):
@@ -199,6 +201,7 @@ def update_entry(updated_entry: WeatherEntry):
         json.dump(data, file, indent=4)
     return {"request_count": request_counts['update_entry'],
             "message": f"Entrée avec date {date_to_update} mise à jour avec succès!"}
+
 
 @app.get("/data/statistics")
 def stats():
