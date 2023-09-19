@@ -16,6 +16,7 @@ request_counts = {
     'get_all_data': 0,
     'filter_by_date': 0,
     'filter_by_precipitation': 0,
+    'filter_by_temperature': 0,
     'add_entry': 0,
     'delete_entry': 0,
     'update_entry': 0,
@@ -135,6 +136,7 @@ def filter_by_precipitation(temp: float, order: str = "asc"):
     Returns:
         dict : les températurs filtrés entre tmin et tmax
     """
+    request_counts['filter_by_temperature'] += 1
     filtered_data = []
     for entry in data:
         tmin = entry.get('tmin')
@@ -142,7 +144,7 @@ def filter_by_precipitation(temp: float, order: str = "asc"):
         if temp >= tmin and temp <= tmax:
             filtered_data.append(entry)
     sorted_data = sorted(filtered_data, key=lambda x: x["tmin"], reverse=(order == "desc"))
-    return {"request_count": request_counts['filter_by_precipitation'], "filtered_data": sorted_data}
+    return {"request_count": request_counts['filter_by_temperature'], "filtered_data": sorted_data}
 
 @app.post("/data/add-entry")
 def add_entry(new_entry: WeatherEntry):
@@ -213,6 +215,7 @@ def stats():
             "request_count_all_data": request_counts['get_all_data'],
             "request_count_filter_by_date": request_counts['filter_by_date'],
             "request_count_filter_by_precipitation": request_counts['filter_by_precipitation'],
+            "request_count_filter_by_temperature": request_counts['filter_by_temperature'],
             "request_count_add_entry": request_counts['add_entry'],
             "request_count_delete_entry": request_counts['delete_entry'],
             "request_count_update_entry": request_counts['update_entry']}
