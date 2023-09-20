@@ -1,36 +1,36 @@
+# temperature.py
+
 from fastapi import APIRouter, HTTPException
 from shared import request_counts
-from api import data
+from connectiondb import get_database_connection  # Importez la fonction depuis database.py
 
 temperature_router = APIRouter()
 
-
+# Modifiez votre route pour utiliser la base de données
 @temperature_router.get("/countries/cities/weathers/{temp}")
 def filter_by_temperature(temp: float, order: str = "asc"):
-    """
-    Route pour filtrer les données par température triées par rapport à la température minimale.
-
-    Args:
-        temp (float): La température à utiliser comme filtre.
-        order (str): Trie la valeur soit "asc" pour croissant soit "desc" pour décroissant.
-
-    Returns:
-        dict: Le nombre de requêtes traitées et une liste d'entrées de données filtrées en fonction de la température spécifiée.
-    """
     try:
         request_counts['filter_by_temperature'] += 1
 
-        filtered_data = []
-        for entry in data:
-            tmin = entry.get('tmin')
-            tmax = entry.get('tmax')
-            if tmin is not None and tmax is not None and temp >= tmin and temp <= tmax:
-                filtered_data.append(entry)
+        # Établissez la connexion à la base de données en utilisant la fonction du fichier database.py
+        db = get_database_connection()
+        cursor = db.cursor()
 
-        sorted_data = sorted(filtered_data, key=lambda x: x["tmin"], reverse=(order == "desc"))
+        # Exécutez une requête SQL pour récupérer les données filtrées
+        query = f"SELECT * FROM weathers WHERE tmin <= {temp} AND tmax >= {temp} ORDER BY tmin {'DESC' if order == 'desc' else 'ASC'}"
+        cursor.execute(query)
 
-        return {"request_count": request_counts['filter_by_temperature'], "filtered_data": sorted_data}
+        # Récupérez les données de la base de données
+        data = cursor.fetchall()
+
+        # Fermez la connexion à la base de données
+        cursor.close()
+        db.close()
+
+        # Transformez les résultats en un format approprié (par exemple, liste de dictionnaires)
+        formatted_data = [{'id': row[0], 'id_city': row[1], 'date': row[2], 'tmin': row[3], 'tmax': row[4], 'prcp': row[5], 'snow': row[6], 'snwd': row[7], 'awnd': row[8]} for row in data]
+
+        return {"request_count": request_counts['filter_by_temperature'], "filtered_data": formatted_data}
     except Exception as e:
-        # Gérez l'exception et renvoyez une réponse d'erreur appropriée
         error_message = f"Erreur lors du filtrage par température : {str(e)}"
-        raise HTTPException(status_code=422, detail=error_message)
+        raise HTTPException(status_code=500, detail=error_message)
