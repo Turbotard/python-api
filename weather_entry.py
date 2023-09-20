@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-
+from typing import Optional
 
 class WeatherEntry(BaseModel):
     """
@@ -14,8 +14,7 @@ class WeatherEntry(BaseModel):
         snwd (float): L'épaisseur de neige au sol en pouces.
         awnd (float): La vitesse moyenne du vent en miles par heure.
     """
-    id : int
-    idcities: int
+    id_city: Optional[int] = None
     date: str
     tmin: float
     tmax: float

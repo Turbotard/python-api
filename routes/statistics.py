@@ -1,9 +1,9 @@
 from fastapi import APIRouter, HTTPException
 from shared import request_counts
 
-statistics_router = APIRouter()
+weather_statistics_router = APIRouter()
 
-@statistics_router.get("/statistics")
+@weather_statistics_router.get("/statistics")
 def stats():
     """
     Route qui affiche le nombre de requêtes faites pour chaque route.
