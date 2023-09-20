@@ -14,6 +14,7 @@ class WeatherEntry(BaseModel):
         snwd (float): L'épaisseur de neige au sol en pouces.
         awnd (float): La vitesse moyenne du vent en miles par heure.
     """
+    id : int
     idcities: int
     date: str
     tmin: float
