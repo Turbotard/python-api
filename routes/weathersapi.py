@@ -6,7 +6,7 @@ with open('../rdu-weather-history.json', 'r') as file:
 i = 1
 for item in data:
     item["id"] = i
-    item["idcities"] = random.randint(0, 6)
+    item["idcities"] = random.randint(1, 7)
     i += 1
 
 

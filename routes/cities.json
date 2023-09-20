@@ -1,0 +1,37 @@
+[
+    {
+        "id": 1,
+        "idcountries": 1,
+        "name": "Paris"
+    },
+    {
+        "id": 2,
+        "idcountries": 2,
+        "name": "New York"
+    },
+    {
+        "id": 3,
+        "idcountries": 1,
+        "name": "Marseille"
+    },
+    {
+        "id": 4,
+        "idcountries": 3,
+        "name": "Toronto"
+    },
+    {
+        "id": 5,
+        "idcountries": 2,
+        "name": "Los Angeles"
+    },
+    {
+        "id": 6,
+        "idcountries": 4,
+        "name": "Berlin"
+    },
+    {
+        "id": 7,
+        "idcountries": 5,
+        "name": "Sydney"
+    }
+]
