@@ -1,37 +1,37 @@
 [
     {
         "id": 1,
-        "idcountries": 1,
+        "id_country": 1,
         "name": "Paris"
     },
     {
         "id": 2,
-        "idcountries": 2,
+        "id_country": 2,
         "name": "New York"
     },
     {
         "id": 3,
-        "idcountries": 1,
+        "id_country": 1,
         "name": "Marseille"
     },
     {
         "id": 4,
-        "idcountries": 3,
+        "id_country": 3,
         "name": "Toronto"
     },
     {
         "id": 5,
-        "idcountries": 1,
+        "id_country": 1,
         "name": "Lyon"
     },
     {
         "id": 6,
-        "idcountries": 2,
+        "id_country": 2,
         "name": "Los Angeles"
     },
     {
         "id": 7,
-        "idcountries": 3,
+        "id_country": 3,
         "name": "Vancouver"
     }
 ]
