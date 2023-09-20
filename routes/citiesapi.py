@@ -6,10 +6,9 @@ cities = [
     {"id": 2, "idcountries": 2, "name": "New York"},
     {"id": 3, "idcountries": 1, "name": "Marseille"},
     {"id": 4, "idcountries": 3, "name": "Toronto"},
-    # Add three more cities
-    {"id": 5, "idcountries": 2, "name": "Los Angeles"},
-    {"id": 6, "idcountries": 4, "name": "Berlin"},
-    {"id": 7, "idcountries": 5, "name": "Sydney"},
+    {"id": 5, "idcountries": 1, "name": "Lyon"},
+    {"id": 6, "idcountries": 2, "name": "Los Angeles"},
+    {"id": 7, "idcountries": 3, "name": "Vancouver"}
 ]
 
 # Save the updated data to a JSON file

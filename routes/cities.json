@@ -21,17 +21,17 @@
     },
     {
         "id": 5,
+        "idcountries": 1,
+        "name": "Lyon"
+    },
+    {
+        "id": 6,
         "idcountries": 2,
         "name": "Los Angeles"
     },
     {
-        "id": 6,
-        "idcountries": 4,
-        "name": "Berlin"
-    },
-    {
         "id": 7,
-        "idcountries": 5,
-        "name": "Sydney"
+        "idcountries": 3,
+        "name": "Vancouver"
     }
 ]
