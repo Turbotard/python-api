@@ -1,9 +1,20 @@
 import statistics
 
 from fastapi import FastAPI
+from routes.countries import country_add, country_get, country_delete, country_update
 from routes.weathers import add, data, date, delete, precipitation, temperature, update
 from routes import statistics, root
 app = FastAPI()
+
+countries_add_router = country_add.countries_add_router
+countries_get_router = country_get.countries_get_router
+countries_delete_router = country_delete.countries_delete_router
+countries_update_router = country_update.countries_update_router
+
+app.include_router(countries_add_router)
+app.include_router(countries_get_router)
+app.include_router(countries_delete_router)
+app.include_router(countries_update_router)
 
 weathers_add_router = add.weathers_add_router
 weathers_data_router = data.weathers_data_router

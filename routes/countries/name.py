@@ -9,16 +9,17 @@ countries_name_router = APIRouter()
 @countries_name_router.get("/countries/{name}")
 def filter_by_temperature(name: str):
     """
-    Retrieve country data by name.
+    Endpoint permettant de filtrer des données de pays par nom.
 
     Args:
-        name (str): The name of the country to filter.
+        name (str): Le nom du pays à filtrer.
 
     Returns:
-        dict: A dictionary containing the filtered country data, e.g., {"filtered_data": [{"id": 1, "name": "France"}]}.
+        dict: Un dictionnaire contenant les données filtrées sous la clé "filtered_data".
 
     Raises:
-        HTTPException: If an error occurs during the database query.
+        HTTPException: En cas d'erreur lors du traitement de la requête, une exception HTTP
+        avec le code d'erreur 422 est levée, et les détails de l'erreur sont inclus dans la réponse.
     """
     try:
 

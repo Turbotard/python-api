@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException
 from shared import request_counts
 from connectiondb import get_database_connection  # Importez la fonction pour la connexion à la base de données
-from weather_entry import WeatherEntry
+from schemas.weather_entry import WeatherEntry
 
 weathers_add_router = APIRouter()
 
