@@ -31,7 +31,6 @@ def add_entry(name_city: str, new_entry: WeatherEntry):
         query = "SELECT id FROM cities WHERE name = %s"
         cursor.execute(query, (name_city,))
         city_id = cursor.fetchone()
-        print(city_id)
 
         if city_id:
             # Si l'ID de la ville existe, insérez les données dans la table weathers
