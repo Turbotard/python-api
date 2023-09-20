@@ -15,7 +15,7 @@ class WeatherEntry(BaseModel):
         awnd (float): La vitesse moyenne du vent en miles par heure.
     """
     id : int
-    idcities: int
+    id_city: int
     date: str
     tmin: float
     tmax: float
