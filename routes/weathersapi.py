@@ -8,7 +8,7 @@ with open('../rdu-weather-history.json', 'r') as file:
 # 2. Pour chaque élément, ajoutez un id, puis réorganisez les clés
 for index, item in enumerate(data):
     item["id"] = index + 1  # Génération d'un identifiant unique
-    item["id_city"] = random.randint(0, 6)
+    item["id_city"] = random.randint(1, 7)
 
     # Réorganisation des clés
     keys_order = ['id', 'id_city'] + [key for key in item if key not in ['id', 'id_city']]
