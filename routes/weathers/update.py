@@ -37,7 +37,7 @@ def update_entry(updated_entry: WeatherEntry):
             updated_data.append(updated_entry.dict())
 
         # Enregistrez les données mises à jour dans le fichier JSON
-        with open('../scriptsapis/rdu-weather-history.json', 'w') as file:
+        with open('../../scriptsapis/rdu-weather-history.json', 'w') as file:
             json.dump(updated_data, file, indent=4)
 
         return {"request_count": request_counts['update_entry'],

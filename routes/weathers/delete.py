@@ -24,7 +24,7 @@ def delete_entry(date_to_delete: str):
         data[:] = [entry for entry in data if entry['date'] != date_to_delete]
 
         # Enregistrez les données mises à jour dans le fichier JSON
-        with open('../scriptsapis/rdu-weather-history.json', 'w') as file:
+        with open('../../scriptsapis/rdu-weather-history.json', 'w') as file:
             json.dump(data, file, indent=4)
 
         return {"request_count": request_counts['delete_entry'],

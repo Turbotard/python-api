@@ -1,6 +1,6 @@
 from fastapi import FastAPI
-from routes import root, data, date, update, delete, precipitation, temperature, statistics, add
-
+from routes import root, statistics
+from routes.weathers import add, data, date, delete, precipitation, temperature, update
 
 app = FastAPI()
 
