@@ -8,6 +8,18 @@ countries_name_router = APIRouter()
 
 @countries_name_router.get("/countries/{name}")
 def filter_by_temperature(name: str):
+    """
+    Retrieve country data by name.
+
+    Args:
+        name (str): The name of the country to filter.
+
+    Returns:
+        dict: A dictionary containing the filtered country data, e.g., {"filtered_data": [{"id": 1, "name": "France"}]}.
+
+    Raises:
+        HTTPException: If an error occurs during the database query.
+    """
     try:
 
         db = get_database_connection()

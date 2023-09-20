@@ -1,0 +1,55 @@
+-- we don't know how to generate root <with-no-name> (class Root) :(
+
+grant select on performance_schema.* to 'mysql.session'@localhost;
+
+grant trigger on sys.* to 'mysql.sys'@localhost;
+
+grant alter, alter routine, create, create routine, create tablespace, create temporary tables, create user, create view, delete, drop, event, execute, file, index, insert, lock tables, process, references, reload, replication client, replication slave, select, show databases, show view, shutdown, super, trigger, update, grant option on *.* to mamp@localhost;
+
+grant super on *.* to 'mysql.session'@localhost;
+
+grant alter, alter routine, create, create routine, create tablespace, create temporary tables, create user, create view, delete, drop, event, execute, file, index, insert, lock tables, process, references, reload, replication client, replication slave, select, show databases, show view, shutdown, super, trigger, update, grant option on *.* to root@'127.0.0.1';
+
+grant alter, alter routine, create, create routine, create tablespace, create temporary tables, create user, create view, delete, drop, event, execute, file, index, insert, lock tables, process, references, reload, replication client, replication slave, select, show databases, show view, shutdown, super, trigger, update, grant option on *.* to root@'::1';
+
+grant alter, alter routine, create, create routine, create tablespace, create temporary tables, create user, create view, delete, drop, event, execute, file, index, insert, lock tables, process, references, reload, replication client, replication slave, select, show databases, show view, shutdown, super, trigger, update, grant option on *.* to root@localhost;
+
+create table countries
+(
+    id           int auto_increment
+        primary key,
+    code_country varchar(255) not null,
+    name         varchar(255) not null,
+    constraint countries_code_country_uindex
+        unique (code_country)
+);
+
+create table cities
+(
+    id          int auto_increment
+        primary key,
+    code_cities varchar(255) not null,
+    id_country  int          not null,
+    name        varchar(255) not null,
+    constraint cities_code_cities_uindex
+        unique (code_cities),
+    constraint cities_countries_id_fk
+        foreign key (id_country) references countries (id)
+);
+
+create table weathers
+(
+    id      int auto_increment
+        primary key,
+    id_city int   not null,
+    date    date  not null,
+    tmin    float null,
+    tmax    float null,
+    prcp    float null,
+    snow    float null,
+    snwd    float null,
+    awnd    float null,
+    constraint weathers_cities_id_fk
+        foreign key (id_city) references cities (id)
+);
+
