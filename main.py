@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from routes.cities import name, add, weathers_city, delete, update
+from routes.cities import city_name, city_add, city_weathers, city_delete, city_update
 from routes.weathers import temperature
 
 app = FastAPI()
