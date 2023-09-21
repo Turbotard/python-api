@@ -1,5 +1,6 @@
 # Initialisation du compteur de requêtes pour chaque route
 global_request_counts = {
+    'Root': 0,
     'Cities_add_entry': 0,
     'Cities_delete_entry': 0,
     'Cities_name_entry': 0,

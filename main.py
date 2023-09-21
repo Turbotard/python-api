@@ -3,7 +3,8 @@ from routes.weathers import weather_add, weather_get, weather_date, weather_dele
     weather_temperature, weather_update, weather_statistics
 from routes.cities import city_add, city_delete, city_name, city_update, city_weathers, city_statistics
 from routes.countries import country_add, country_delete, country_get, country_name, country_statistics, country_update
-from routes import root
+from routes import root, root_global_statistics
+
 app = FastAPI()
 
 
@@ -67,6 +68,8 @@ app.include_router(weather_statistics_router)
 
 #Root
 
+statistics_router = root_global_statistics.statistics_router
 root_router = root.root_router
 
 app.include_router(root_router)
+app.include_router(statistics_router)
