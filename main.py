@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from routes.weathers import weather_add, weather_data, weather_date, weather_delete, weather_precipitation, \
+from routes.weathers import weather_add, weather_get, weather_date, weather_delete, weather_precipitation, \
     weather_temperature, weather_update, weather_statistics
 from routes.cities import city_add, city_delete, city_name, city_update, city_weathers, city_statistics
 from routes.countries import country_add, country_delete, country_get, country_name, country_statistics, country_update
@@ -47,7 +47,7 @@ app.include_router(city_weathers_router)
 #Weathers
 
 weathers_add_router = weather_add.weathers_add_router
-weathers_data_router = weather_data.weathers_data_router
+weathers_get_router = weather_get.weathers_data_router
 weathers_date_router = weather_date.weathers_date_router
 weathers_delete_router = weather_delete.weathers_delete_router
 weathers_precipitation_router = weather_precipitation.weathers_precipitation_router
@@ -57,7 +57,7 @@ weathers_update_router = weather_update.weathers_update_router
 weather_statistics_router = weather_statistics.weather_statistics_router
 
 app.include_router(weathers_add_router)
-app.include_router(weathers_data_router)
+app.include_router(weathers_get_router)
 app.include_router(weathers_date_router)
 app.include_router(weathers_delete_router)
 app.include_router(weathers_precipitation_router)

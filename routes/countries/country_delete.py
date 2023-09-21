@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from connectiondb import get_database_connection
-from share import countries_request_counts
+from shared import countries_request_counts, global_request_counts
 countries_delete_router = APIRouter()
 
 
@@ -22,6 +22,7 @@ def delete_entry(country_to_delete: str):
 
     try:
         countries_request_counts['delete_entry'] += 1
+        global_request_counts['Countries_delete_entry'] += 1
 
         # Établir une connexion à la base de données
         db = get_database_connection()

@@ -1,5 +1,4 @@
 from fastapi import APIRouter, HTTPException
-
 from shared import cities_request_counts
 
 cities_statistics_router = APIRouter()

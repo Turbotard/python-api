@@ -1,8 +1,6 @@
-# weather_temperature.py
-
 from fastapi import APIRouter, HTTPException
 from connectiondb import get_database_connection
-from share import countries_request_counts
+from shared import countries_request_counts, global_request_counts
 
 countries_name_router = APIRouter()
 
@@ -23,6 +21,7 @@ def filter_by_temperature(name: str):
     """
     try:
         countries_request_counts['get_by_name'] += 1
+        global_request_counts['Countries_get_by_name'] += 1
 
         db = get_database_connection()
         cursor = db.cursor()

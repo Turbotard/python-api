@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException
-from shared import weathers_request_counts
+from shared import weathers_request_counts, global_request_counts
 from connectiondb import get_database_connection
 
 weathers_delete_router = APIRouter()
@@ -21,6 +21,7 @@ def delete_entry(name_city: str, date_to_delete: str):
     """
     try:
         weathers_request_counts['delete_entry'] += 1
+        global_request_counts['Weathers_delete_entry'] += 1
 
         # Établissez la connexion à la base de données
         db = get_database_connection()
