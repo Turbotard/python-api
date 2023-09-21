@@ -1,41 +1,66 @@
 from typing import Optional
-
 from fastapi import APIRouter, HTTPException
 from shared import request_counts
-from api import data
+from connectiondb import get_database_connection  # Importez la fonction pour la connexion à la base de données
 
-precipitation_router = APIRouter()
+weathers_precipitation_router = APIRouter()
 
 
-@precipitation_router.get("/countries/cities/weathers/{min_prcp}/{max_prcp}")
+@weathers_precipitation_router.get("/countries/cities/weathers/precipitation/{min_prcp}/{max_prcp}")
 def filter_by_precipitation(min_prcp: Optional[float] = None, max_prcp: Optional[float] = None, order: str = "asc"):
     """
-    Route pour filtrer les données par plage de précipitations.
+    Filtrer les données météorologiques par plage de précipitations.
 
     Args:
         min_prcp (float, optional): La valeur minimale des précipitations en pouces.
         max_prcp (float, optional): La valeur maximale des précipitations en pouces.
-        order (string): trie la valeur soit asc pour croissant soit desc pour décroissant.
+        order (str): Trie la valeur soit "asc" pour croissant soit "desc" pour décroissant.
 
     Returns:
-        dict: Le nombre de requêtes traitées et une liste d'entrées de données filtrées en fonction des précipitations spécifiées.
+        dict: Un dictionnaire contenant le nombre de requêtes traitées et une liste d'entrées de données filtrées en fonction des précipitations spécifiées.
+
+    Raises:
+        HTTPException: Si une erreur survient lors du filtrage par précipitations.
     """
     try:
         request_counts['filter_by_precipitation'] += 1
 
-        if min_prcp is None and max_prcp is None:
-            return {"request_count": request_counts['filter_by_precipitation'], "data": data}
+        # Établissez la connexion à la base de données
+        db = get_database_connection()
+        cursor = db.cursor()
 
-        filtered_data = []
+        # Construisez la requête SQL en fonction des paramètres min_prcp et max_prcp
+        if min_prcp is None:
+            min_prcp_condition = ""
+        else:
+            min_prcp_condition = f"prcp >= {min_prcp}"
 
-        for entry in data:
-            prcp = entry.get('prcp')
-            if prcp is not None and (min_prcp is None or prcp >= min_prcp) and (max_prcp is None or prcp <= max_prcp):
-                filtered_data.append(entry)
-        sorted_data = sorted(filtered_data, key=lambda x: x["prcp"], reverse=(order == "desc"))
+        if max_prcp is None:
+            max_prcp_condition = ""
+        else:
+            max_prcp_condition = f"prcp <= {max_prcp}"
 
-        return {"request_count": request_counts['filter_by_precipitation'], "filtered_data": sorted_data}
+        if min_prcp_condition and max_prcp_condition:
+            where_clause = f"WHERE {min_prcp_condition} AND {max_prcp_condition}"
+        elif min_prcp_condition:
+            where_clause = f"WHERE {min_prcp_condition}"
+        elif max_prcp_condition:
+            where_clause = f"WHERE {max_prcp_condition}"
+        else:
+            where_clause = ""
+
+        # Exécutez une requête SQL pour récupérer les données filtrées
+        query = f"SELECT * FROM weathers {where_clause} ORDER BY prcp {'DESC' if order == 'desc' else 'ASC'}"
+        cursor.execute(query)
+
+        # Récupérez les données de la base de données
+        data = cursor.fetchall()
+
+        # Fermez la connexion à la base de données
+        cursor.close()
+        db.close()
+
+        return {"request_count": request_counts['filter_by_precipitation'], "filtered_data": data}
     except Exception as e:
-        # Gérez l'exception et renvoyez une réponse d'erreur appropriée
         error_message = f"Erreur lors du filtrage par précipitations : {str(e)}"
         raise HTTPException(status_code=422, detail=error_message)

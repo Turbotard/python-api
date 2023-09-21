@@ -1,9 +1,9 @@
 from fastapi import APIRouter, HTTPException
 from shared import request_counts
 
-root_router = APIRouter()
+weather_root_router = APIRouter()
 
-@root_router.get("/")
+@weather_root_router.get("/")
 def read_root():
     """
     Route d'accueil de l'API.

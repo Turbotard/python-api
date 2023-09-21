@@ -2,40 +2,54 @@ from datetime import datetime
 
 from fastapi import APIRouter, HTTPException
 from shared import request_counts
-from api import data
+from connectiondb import get_database_connection  # Importez la fonction pour la connexion à la base de données
 
-date_router = APIRouter()
+weathers_date_router = APIRouter()
 
 
-@date_router.get("/countries/cities/weathers/{start_date}/{end_date}")
+@weathers_date_router.get("/countries/cities/weathers/{start_date}/{end_date}")
 def filter_by_date(start_date: str, end_date: str, order: str = "asc"):
     """
-    Route pour filtrer les données par plage de dates.
+    Filtre les données météorologiques par plage de dates.
 
     Args:
         start_date (str): La date de début au format 'YYYY-MM-DD'.
         end_date (str): La date de fin au format 'YYYY-MM-DD'.
 
     Returns:
-        dict: Le nombre de requêtes traitées et une liste d'entrées de données comprises entre les dates spécifiées.
+        dict: Un dictionnaire contenant le nombre de requêtes traitées et une liste d'entrées de données comprises entre les dates spécifiées.
+
+    Raises:
+        HTTPException: Si une erreur survient lors du filtrage par date.
     """
     try:
         request_counts['filter_by_date'] += 1
+
+        # Établissez la connexion à la base de données
+        db = get_database_connection()
+        cursor = db.cursor()
 
         # Convertir les dates en objets datetime
         start_datetime = datetime.strptime(start_date, "%Y-%m-%d")
         end_datetime = datetime.strptime(end_date, "%Y-%m-%d")
 
-        # Filtrer les données en fonction de la plage de dates
-        filtered_data = [entry for entry in data if
-                         start_datetime <= datetime.strptime(entry['date'], "%Y-%m-%d") <= end_datetime]
+        # Exécutez une requête SQL pour récupérer les données filtrées
+        query = f"SELECT * FROM weathers WHERE date BETWEEN '{start_date}' AND '{end_date}' ORDER BY date {'DESC' if order == 'desc' else 'ASC'}"
+        cursor.execute(query)
 
-        # Trier les données en fonction de l'ordre spécifié
-        sorted_data = sorted(filtered_data, key=lambda x: datetime.strptime(x["date"], "%Y-%m-%d"),
-                             reverse=(order == "desc"))
+        # Récupérez les données de la base de données
+        data = cursor.fetchall()
 
-        return {"request_count": request_counts['filter_by_date'], "filtered_data": sorted_data}
+        # Fermez la connexion à la base de données
+        cursor.close()
+        db.close()
+
+        # Transformez les résultats en un format approprié (par exemple, liste de dictionnaires)
+        formatted_data = [
+            {'id': row[0], 'id_city': row[1], 'date': row[2], 'tmin': row[3], 'tmax': row[4], 'prcp': row[5],
+             'snow': row[6], 'snwd': row[7], 'awnd': row[8]} for row in data]
+
+        return {"request_count": request_counts['filter_by_date'], "filtered_data": formatted_data}
     except Exception as e:
-        # Gérez l'exception et renvoyez une réponse d'erreur appropriée
         error_message = f"Erreur lors du filtrage par date : {str(e)}"
         raise HTTPException(status_code=422, detail=error_message)
