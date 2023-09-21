@@ -10,7 +10,7 @@ def delete_city_by_code(code_cities: str):
         cursor = db.cursor()
 
         # Vérifier si la ville avec ce code postal existe
-        check_query = "SELECT id FROM cities WHERE code_cities = %s"
+        check_query = "SELECT id FROM cities WHERE code_city = %s"
         cursor.execute(check_query, (code_cities,))
         city_data = cursor.fetchone()
 
@@ -18,7 +18,7 @@ def delete_city_by_code(code_cities: str):
             raise HTTPException(status_code=404, detail=f"Ville avec le code postal {code_cities} non trouvée.")
 
         # Supprimer la ville avec le code postal donné
-        delete_query = "DELETE FROM cities WHERE code_cities = %s"
+        delete_query = "DELETE FROM cities WHERE code_city = %s"
         cursor.execute(delete_query, (code_cities,))
 
         db.commit()

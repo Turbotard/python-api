@@ -15,7 +15,7 @@ def update_city_by_code(old_code_cities: str, city_update: CityUpdate = Body(...
         cursor = db.cursor()
 
         # Vérifier si la ville avec ce code postal existe
-        check_query = "SELECT id FROM cities WHERE code_cities = %s"
+        check_query = "SELECT id FROM cities WHERE code_city = %s"
         cursor.execute(check_query, (old_code_cities,))
         city_data = cursor.fetchone()
 
@@ -23,7 +23,7 @@ def update_city_by_code(old_code_cities: str, city_update: CityUpdate = Body(...
             raise HTTPException(status_code=404, detail=f"Ville avec le code postal {old_code_cities} non trouvée.")
 
         # Mettre à jour la ville avec les nouvelles données
-        update_query = "UPDATE cities SET code_cities = %s, name = %s WHERE code_cities = %s"
+        update_query = "UPDATE cities SET code_city = %s, name = %s WHERE code_city = %s"
         cursor.execute(update_query, (city_update.code_cities, city_update.name, old_code_cities))
 
         db.commit()
