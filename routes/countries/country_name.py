@@ -1,13 +1,11 @@
-# weather_temperature.py
-
 from fastapi import APIRouter, HTTPException
 from connectiondb import get_database_connection
-from share import countries_request_counts
+from shared import countries_request_counts
 
 countries_name_router = APIRouter()
 
-@countries_name_router.get("/countries/{name}")
-def filter_by_temperature(name: str):
+@countries_name_router.get("/countries/name/{name}")
+def get_city_by_name(name: str):
     """
     Endpoint permettant de filtrer des données de pays par nom.
 
@@ -27,21 +25,24 @@ def filter_by_temperature(name: str):
         db = get_database_connection()
         cursor = db.cursor()
 
-        # Exécutez une requête SQL pour récupérer les données filtrées
-        query = f"SELECT * FROM countries WHERE name = %s"
+        # Utilisation de requêtes paramétrées pour éviter les injections SQL
+        query = "SELECT * FROM countries WHERE name = %s"
         cursor.execute(query, (name,))
 
-        # Récupérez les données de la base de données
-        data = cursor.fetchone()
+        data = cursor.fetchone()  # Récupère une seule entrée puisqu'on s'attend à ce qu'un nom de pays soit unique
 
-        # Fermez la connexion à la base de données
         cursor.close()
         db.close()
 
-        # Transformez les résultats en un format approprié (par exemple, liste de dictionnaires)
-        formatted_data = [{'id': data[0], 'code_country': data[1], 'name': data[2]}]
+        if not data:
+            raise HTTPException(status_code=404, detail=f"Aucun pays nommé {name} trouvée.")
 
-        return { "filtered_data": formatted_data}
+        city_data = {'Code Country': data[1], 'Name': data[2]}
+
+        return {"countries_request_count": countries_request_counts['get_by_name'], "city_name": city_data}
+
     except Exception as e:
-        error_message = f"Erreur lors du filtrage par nom : {str(e)}"
+        error_message = f"Erreur lors de la recherche par nom du pays : {str(e)}"
         raise HTTPException(status_code=422, detail=error_message)
+
+
