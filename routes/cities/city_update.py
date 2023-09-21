@@ -6,7 +6,7 @@ from schemas.city_entry import CityEntry
 
 cities_update_router = APIRouter()
 
-@cities_update_router.put("/cities/update/{old_code_city}")
+@cities_update_router.put("/countries/cities/update/{old_code_city}")
 def update_city_by_code(old_code_city: str, updated_entry: CityEntry):
     try:
         db = get_database_connection()

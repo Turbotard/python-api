@@ -27,7 +27,7 @@ def create_city_for_country(country_name: str, new_entry: CityEntry):
         # Ajustez la requête d'insertion pour la ville
         city_insert_query = "INSERT INTO cities (code_city, id_country, name) VALUES (%s, %s, %s)"
 
-        cursor.execute(city_insert_query, (new_entry.code_cities, country_id, new_entry.name))
+        cursor.execute(city_insert_query, (new_entry.code_city, country_id, new_entry.name))
 
         db.commit()
 
