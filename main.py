@@ -4,11 +4,11 @@ from routes.weathers import temperature
 
 app = FastAPI()
 
-weathers_router = weathers_city.weathers_router
-cities_router = name.cities_router
-cities_add_router = add.cities_router
-cities_delete_router = delete.cities_router
-cities_update_router = update.cities_router
+weathers_router = city_weathers.weathers_router
+cities_router = city_name.cities_router
+cities_add_router = city_add.cities_router
+cities_delete_router = city_delete.cities_router
+cities_update_router = city_update.cities_router
 
 app.include_router(cities_router)
 app.include_router(cities_add_router)
