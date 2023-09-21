@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException
 from schemas.country_entry import CountryEntry
 from connectiondb import get_database_connection
-from shared import countries_request_counts
+from shared import countries_request_counts, global_request_counts
 countries_update_router = APIRouter()
 
 @countries_update_router.put("/countries/{country_to_update}")
@@ -31,6 +31,7 @@ def update_entry(country_to_update: str, updated_entry: CountryEntry):
 
     try:
         countries_request_counts['update_entry'] += 1
+        global_request_counts['Countries_update_entry'] += 1
 
         # Établissez la connexion à la base de données
         db = get_database_connection()

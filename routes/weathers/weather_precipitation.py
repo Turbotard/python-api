@@ -1,7 +1,7 @@
 from typing import Optional
 from fastapi import APIRouter, HTTPException
-from shared import weathers_request_counts
-from connectiondb import get_database_connection  # Importez la fonction pour la connexion à la base de données
+from shared import weathers_request_counts, global_request_counts
+from connectiondb import get_database_connection
 
 weathers_precipitation_router = APIRouter()
 
@@ -24,6 +24,7 @@ def filter_by_precipitation(min_prcp: Optional[float] = None, max_prcp: Optional
     """
     try:
         weathers_request_counts['filter_by_precipitation'] += 1
+        global_request_counts['Weathers_filter_by_precipitation'] += 1
 
         # Établissez la connexion à la base de données
         db = get_database_connection()

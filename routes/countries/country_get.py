@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
-from connectiondb import get_database_connection  # Importez la fonction pour la connexion à la base de données
-from shared import countries_request_counts
+from connectiondb import get_database_connection
+from shared import countries_request_counts, global_request_counts
 countries_get_router = APIRouter()
 
 @countries_get_router.get("/countries")
@@ -16,6 +16,7 @@ def get_all_data():
     """
     try:
         countries_request_counts['get_all_data'] += 1
+        global_request_counts['Countries_get_all_data'] += 1
 
         # Établir une connexion à la base de données
         db = get_database_connection()

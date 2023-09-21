@@ -1,8 +1,7 @@
-from fastapi import APIRouter, HTTPException, Body
-from pydantic import BaseModel
+from fastapi import APIRouter, HTTPException
 from connectiondb import get_database_connection
 from schemas.city_entry import CityEntry
-from shared import cities_request_counts
+from shared import cities_request_counts, global_request_counts
 
 cities_add_router = APIRouter()
 
@@ -36,6 +35,7 @@ def create_city_for_country(country_name: str, new_entry: CityEntry):
 
     try:
         cities_request_counts['add_entry'] += 1
+        global_request_counts['Cities_add_entry'] += 1
 
         db = get_database_connection()
         cursor = db.cursor()

@@ -1,6 +1,5 @@
 from fastapi import APIRouter, HTTPException
-
-from shared import cities_request_counts
+from shared import cities_request_counts, global_request_counts
 from connectiondb import get_database_connection
 
 cities_weathers_router = APIRouter()
@@ -32,6 +31,7 @@ def get_weather_by_city(city_name: str):
 
     try:
         cities_request_counts['city_weathers_entry'] += 1
+        global_request_counts['Cities_city_weathers_entry'] += 1
 
         db = get_database_connection()
         cursor = db.cursor()

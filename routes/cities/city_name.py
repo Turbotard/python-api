@@ -1,6 +1,5 @@
 from fastapi import APIRouter, HTTPException
-
-from shared import cities_request_counts
+from shared import cities_request_counts, global_request_counts
 from connectiondb import get_database_connection
 
 cities_name_router = APIRouter()
@@ -28,6 +27,7 @@ def get_city_by_name(name: str):
 
     try:
         cities_request_counts['name_entry'] += 1
+        global_request_counts['Cities_name_entry'] += 1
 
         db = get_database_connection()
         cursor = db.cursor()

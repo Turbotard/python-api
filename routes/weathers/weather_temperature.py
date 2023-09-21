@@ -1,8 +1,6 @@
-# weather_temperature.py
-
 from fastapi import APIRouter, HTTPException
-from shared import weathers_request_counts
-from connectiondb import get_database_connection  # Importez la fonction depuis database.py
+from shared import weathers_request_counts, global_request_counts
+from connectiondb import get_database_connection
 
 weathers_temperature_router = APIRouter()
 
@@ -24,6 +22,7 @@ def filter_by_temperature(temp: float, order: str = "asc"):
     """
     try:
         weathers_request_counts['filter_by_temperature'] += 1
+        global_request_counts['Weathers_filter_by_temperature'] += 1
 
         # Établir la connexion à la base de données en utilisant la fonction du fichier database.py
         db = get_database_connection()
