@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 
-from city_share import city_request_counts
+from shared import cities_request_counts
 from connectiondb import get_database_connection
 from schemas.city_entry import CityEntry
 
@@ -32,7 +32,7 @@ def update_city_by_code(old_code_city: str, updated_entry: CityEntry):
     """
 
     try:
-        city_request_counts['update_entry'] += 1
+        cities_request_counts['update_entry'] += 1
 
         db = get_database_connection()
         cursor = db.cursor()

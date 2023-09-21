@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
 
-from city_share import city_request_counts
+from shared import cities_request_counts
 from connectiondb import get_database_connection
 
 cities_delete_router = APIRouter()
@@ -25,7 +25,7 @@ def delete_city_by_code(code_city: str):
                        une erreur pendant le processus de suppression.
     """
     try:
-        city_request_counts['delete_entry'] += 1
+        cities_request_counts['delete_entry'] += 1
 
         db = get_database_connection()
         cursor = db.cursor()

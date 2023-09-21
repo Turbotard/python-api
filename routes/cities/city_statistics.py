@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
 
-from city_share import city_request_counts
+from shared import cities_request_counts
 
 cities_statistics_router = APIRouter()
 
@@ -15,11 +15,11 @@ def stats():
     try:
         return {
             "Statistics": "City",
-            "request_count_add": city_request_counts['add_entry'],
-            "request_count_delete": city_request_counts['delete_entry'],
-            "request_count_name": city_request_counts['name_entry'],
-            "request_count_update": city_request_counts['update_entry'],
-            "request_count_city_weathers": city_request_counts['city_weathers_entry']
+            "request_count_add": cities_request_counts['add_entry'],
+            "request_count_delete": cities_request_counts['delete_entry'],
+            "request_count_name": cities_request_counts['name_entry'],
+            "request_count_update": cities_request_counts['update_entry'],
+            "request_count_city_weathers": cities_request_counts['city_weathers_entry']
         }
     except Exception as e:
         # Gérez l'exception et renvoyez une réponse d'erreur appropriée
