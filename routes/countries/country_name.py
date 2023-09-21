@@ -26,7 +26,7 @@ def filter_by_temperature(name: str):
         cursor = db.cursor()
 
         # Exécutez une requête SQL pour récupérer les données filtrées
-        query = f"SELECT * FROM countries WHERE names = %s"
+        query = f"SELECT * FROM countries WHERE name = %s"
         cursor.execute(query, (name,))
 
         # Récupérez les données de la base de données
@@ -37,7 +37,7 @@ def filter_by_temperature(name: str):
         db.close()
 
         # Transformez les résultats en un format approprié (par exemple, liste de dictionnaires)
-        formatted_data = [{'id': data[0], 'names': data[1]}]
+        formatted_data = [{'id': data[0], 'code_country': data[1], 'name': data[2]}]
 
         return { "filtered_data": formatted_data}
     except Exception as e:
