@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException
-from shared import countries_request_counts
+from share import countries_request_counts
 
 countries_statistics_router = APIRouter()
 

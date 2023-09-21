@@ -2,7 +2,7 @@
 
 from fastapi import APIRouter, HTTPException
 from connectiondb import get_database_connection
-from shared import countries_request_counts
+from share import countries_request_counts
 
 countries_name_router = APIRouter()
 
