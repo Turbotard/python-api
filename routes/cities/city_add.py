@@ -26,7 +26,7 @@ def create_city_for_country(country_name: str, city: City = Body(...)):
         country_id = country_data[0]
 
         # Ajustez la requête d'insertion pour la ville
-        city_insert_query = "INSERT INTO cities (code_cities, id_country, name) VALUES (%s, %s, %s)"
+        city_insert_query = "INSERT INTO cities (code_city, id_country, name) VALUES (%s, %s, %s)"
 
         cursor.execute(city_insert_query, (city.code_cities, country_id, city.name))
 

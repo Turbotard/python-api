@@ -10,7 +10,7 @@ def get_city_by_name(city_name: str):
         cursor = db.cursor()
 
         # Utilisation de requêtes paramétrées pour éviter les injections SQL
-        query = "SELECT name FROM cities WHERE name = %s"
+        query = "SELECT * FROM cities WHERE name = %s"
         cursor.execute(query, (city_name,))
 
         data = cursor.fetchone()  # Récupère une seule entrée puisqu'on s'attend à ce qu'un nom de ville soit unique
@@ -21,7 +21,7 @@ def get_city_by_name(city_name: str):
         if not data:
             raise HTTPException(status_code=404, detail=f"Aucune ville nommée {city_name} trouvée.")
 
-        city_data = {'name': data[0]}
+        city_data = {'Code City': data[1], 'Name': data[3]}
 
         return {"city_name": city_data}
 
