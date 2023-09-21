@@ -3,7 +3,7 @@ from shared import request_counts
 
 weather_statistics_router = APIRouter()
 
-@weather_statistics_router.get("/statistics")
+@weather_statistics_router.get("/weathers/statistics")
 def stats():
     """
     Route qui affiche le nombre de requêtes faites pour chaque route.
@@ -13,7 +13,7 @@ def stats():
     """
     try:
         return {
-            "request_count_root": request_counts['root'],
+            "Statistics": "Weathers",
             "request_count_all_data": request_counts['get_all_data'],
             "request_count_filter_by_date": request_counts['filter_by_date'],
             "request_count_filter_by_precipitation": request_counts['filter_by_precipitation'],

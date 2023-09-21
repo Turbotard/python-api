@@ -1,4 +1,4 @@
-# temperature.py
+# weather_temperature.py
 
 from fastapi import APIRouter, HTTPException
 from shared import request_counts
