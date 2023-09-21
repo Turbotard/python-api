@@ -4,20 +4,19 @@ from connectiondb import get_database_connection
 
 cities_router = APIRouter()
 
-
-# Définir le modèle Pydantic pour la requête entrante
+# Modifiez le modèle pour inclure le code postale
 class City(BaseModel):
+    code_cities: str
     name: str
 
-
 @cities_router.post("/countries/cities/{country_name}")
-def create_city_for_country(country_name: str, city: City):
+def create_city_for_country(country_name: str, city: City = Body(...)):
     try:
         db = get_database_connection()
         cursor = db.cursor()
 
-        # Obtenir l'ID du pays à partir du nom du pays
-        country_query = "SELECT id FROM countries WHERE names = %s"
+        # Récupérez l'ID du pays en utilisant le nom du pays
+        country_query = "SELECT id FROM countries WHERE name = %s"
         cursor.execute(country_query, (country_name,))
 
         country_data = cursor.fetchone()
@@ -26,12 +25,11 @@ def create_city_for_country(country_name: str, city: City):
 
         country_id = country_data[0]
 
-        # Insérer la nouvelle ville avec l'id_country approprié
-        city_insert_query = "INSERT INTO cities (id,id_country, name) VALUES (%s,%s, %s)"
+        # Ajustez la requête d'insertion pour la ville
+        city_insert_query = "INSERT INTO cities (code_cities, id_country, name) VALUES (%s, %s, %s)"
 
-        cursor.execute(city_insert_query, (city.id, country_id[0], city.name))
+        cursor.execute(city_insert_query, (city.code_cities, country_id, city.name))
 
-        # Valider l'insertion
         db.commit()
 
         cursor.close()
