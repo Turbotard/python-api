@@ -5,6 +5,25 @@ cities_name_router = APIRouter()
 
 @cities_name_router.get("/countries/cities/name/{name}")
 def get_city_by_name(name: str):
+    """
+    Récupère les détails d'une ville spécifiée par son nom.
+
+    Cette fonction se connecte à la base de données, recherche une ville
+    par son nom et renvoie les détails de la ville si elle est trouvée.
+    Sinon, une exception HTTP 404 est levée.
+
+    Args:
+        name (str): Le nom de la ville à rechercher.
+
+    Returns:
+        dict: Un dictionnaire contenant le code de la ville et son nom
+              s'il est trouvé.
+
+    Raises:
+        HTTPException: Une exception est levée si la ville n'est pas trouvée
+                       ou s'il y a une erreur pendant le processus de recherche.
+    """
+
     try:
         db = get_database_connection()
         cursor = db.cursor()

@@ -8,6 +8,27 @@ cities_update_router = APIRouter()
 
 @cities_update_router.put("/countries/cities/update/{old_code_city}")
 def update_city_by_code(old_code_city: str, updated_entry: CityEntry):
+    """
+    Mise à jour des détails d'une ville spécifiée par son code postal.
+
+    Cette fonction se connecte à la base de données, vérifie si une ville avec le
+    code postal spécifié existe. Si elle existe, elle est mise à jour avec les nouvelles
+    informations fournies. Sinon, une exception HTTP 404 est levée.
+
+    Args:
+        old_code_city (str): Le code postal de la ville à mettre à jour.
+        updated_entry (CityEntry): Un objet Pydantic contenant les détails mis à jour
+                                   de la ville, y compris le nouveau code postal et le nom.
+
+    Returns:
+        dict: Un dictionnaire contenant le statut (success ou failure) et un message
+              décrivant le résultat de l'opération.
+
+    Raises:
+        HTTPException: Une exception est levée si la ville n'est pas trouvée ou s'il y a
+                       une erreur pendant le processus de mise à jour.
+    """
+
     try:
         db = get_database_connection()
         cursor = db.cursor()

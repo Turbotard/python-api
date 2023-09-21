@@ -10,6 +10,29 @@ cities_add_router = APIRouter()
 
 @cities_add_router.post("/countries/cities/{country_name}")
 def create_city_for_country(country_name: str, new_entry: CityEntry):
+    """
+    Ajoute une nouvelle ville à un pays spécifié.
+
+    Cette fonction connecte à la base de données, récupère l'ID d'un pays
+    spécifié par son nom, puis insère une nouvelle entrée de ville dans
+    la table des villes en utilisant l'ID du pays et les détails de la
+    nouvelle ville.
+
+    Args:
+        country_name (str): Le nom du pays où la ville doit être ajoutée.
+        new_entry (CityEntry): Un objet Pydantic contenant les détails
+                               de la nouvelle ville à ajouter, y compris
+                               le code postal et le nom.
+
+    Returns:
+        dict: Un dictionnaire contenant le statut (success ou failure) et
+              un message décrivant le résultat de l'opération.
+
+    Raises:
+        HTTPException: Une exception est levée si le pays n'est pas trouvé
+                       ou s'il y a une erreur pendant le processus d'insertion.
+    """
+
     try:
         db = get_database_connection()
         cursor = db.cursor()

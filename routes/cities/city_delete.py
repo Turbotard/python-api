@@ -4,6 +4,24 @@ from connectiondb import get_database_connection
 cities_delete_router = APIRouter()
 @cities_delete_router.delete("/cities/delete/{code_city}")
 def delete_city_by_code(code_city: str):
+    """
+    Supprime une ville en fonction de son code postal.
+
+    Cette fonction se connecte à la base de données, vérifie si une ville avec le
+    code postal spécifié existe. Si elle existe, elle la supprime. Sinon, elle renvoie
+    une erreur 404.
+
+    Args:
+        code_city (str): Le code postal de la ville à supprimer.
+
+    Returns:
+        dict: Un dictionnaire contenant le status et un message indiquant
+              si la suppression a réussi ou non.
+
+    Raises:
+        HTTPException: Une exception est levée si la ville n'est pas trouvée ou s'il y a
+                       une erreur pendant le processus de suppression.
+    """
     try:
         db = get_database_connection()
         cursor = db.cursor()
