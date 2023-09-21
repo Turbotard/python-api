@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from fastapi import APIRouter, HTTPException
 from shared import weathers_request_counts
 from connectiondb import get_database_connection  # Importez la fonction pour la connexion à la base de données
@@ -28,10 +26,6 @@ def filter_by_date(start_date: str, end_date: str, order: str = "asc"):
         # Établissez la connexion à la base de données
         db = get_database_connection()
         cursor = db.cursor()
-
-        # Convertir les dates en objets datetime
-        start_datetime = datetime.strptime(start_date, "%Y-%m-%d")
-        end_datetime = datetime.strptime(end_date, "%Y-%m-%d")
 
         # Exécutez une requête SQL pour récupérer les données filtrées
         query = f"SELECT * FROM weathers WHERE date BETWEEN '{start_date}' AND '{end_date}' ORDER BY date {'DESC' if order == 'desc' else 'ASC'}"
