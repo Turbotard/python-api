@@ -4,8 +4,8 @@ from shared import countries_request_counts, global_request_counts
 
 countries_name_router = APIRouter()
 
-@countries_name_router.get("/countries/{name}")
-def filter_by_temperature(name: str):
+@countries_name_router.get("/countries/name/{name}")
+def get_by_name(name: str):
     """
     Endpoint permettant de filtrer des données de pays par nom.
 
@@ -36,7 +36,8 @@ def filter_by_temperature(name: str):
         # Fermez la connexion à la base de données
         cursor.close()
         db.close()
-
+        if data is None:
+            raise HTTPException(status_code=404, detail=f"Country with name '{name}' not found.")
         # Transformez les résultats en un format approprié (par exemple, liste de dictionnaires)
         formatted_data = [{'id': data[0], 'code_country': data[1], 'name': data[2]}]
 

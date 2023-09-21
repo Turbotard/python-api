@@ -5,8 +5,7 @@ from schemas.city_entry import CityEntry
 
 cities_update_router = APIRouter()
 
-
-@cities_update_router.put("/countries/cities/update/{old_code_city}")
+@cities_update_router.put("/countries/cities/{old_code_city}")
 def update_city_by_code(old_code_city: str, updated_entry: CityEntry):
     """
     Mise à jour des détails d'une ville spécifiée par son code postal.
@@ -28,7 +27,6 @@ def update_city_by_code(old_code_city: str, updated_entry: CityEntry):
         HTTPException: Une exception est levée si la ville n'est pas trouvée ou s'il y a
                        une erreur pendant le processus de mise à jour.
     """
-
     try:
         cities_request_counts['update_entry'] += 1
         global_request_counts['Cities_update_entry'] += 1
@@ -36,7 +34,7 @@ def update_city_by_code(old_code_city: str, updated_entry: CityEntry):
         db = get_database_connection()
         cursor = db.cursor()
 
-        # Vérifier si la ville avec ce code postal existe
+        # Check if the city with this postal code exists
         check_query = "SELECT id FROM cities WHERE code_city = %s"
         cursor.execute(check_query, (old_code_city,))
         city_data = cursor.fetchone()
@@ -44,14 +42,13 @@ def update_city_by_code(old_code_city: str, updated_entry: CityEntry):
         if not city_data:
             raise HTTPException(status_code=404, detail=f"Ville avec le code postal {old_code_city} non trouvée.")
 
-        # Mettre à jour la ville avec les nouvelles données
+        # Update the city with the new data
         update_query = """
             UPDATE cities 
-            SET code_city = %s, name = %s, id_country = %s 
+            SET code_city = %s, name = %s 
             WHERE code_city = %s
             """
-        cursor.execute(update_query,
-                       (updated_entry.code_city, updated_entry.name, updated_entry.id_country, old_code_city))
+        cursor.execute(update_query, (updated_entry.code_city, updated_entry.name, old_code_city))
 
         db.commit()
 
@@ -64,3 +61,4 @@ def update_city_by_code(old_code_city: str, updated_entry: CityEntry):
     except Exception as e:
         error_message = f"Erreur lors de la mise à jour de la ville : {str(e)}"
         raise HTTPException(status_code=422, detail=error_message)
+

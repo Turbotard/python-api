@@ -8,5 +8,4 @@ class CityEntry(BaseModel):
     Attributes:
     """
     code_city: str
-    id_country : str
     name: str

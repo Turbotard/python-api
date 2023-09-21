@@ -43,8 +43,8 @@ def create_city_for_country(country_name: str, new_entry: CityEntry):
         # Récupérez l'ID du pays en utilisant le nom du pays
         country_query = "SELECT id FROM countries WHERE name = %s"
         cursor.execute(country_query, (country_name,))
-
         country_data = cursor.fetchone()
+
         if not country_data:
             raise HTTPException(status_code=404, detail=f"Pays nommé {country_name} non trouvé.")
 
@@ -52,7 +52,6 @@ def create_city_for_country(country_name: str, new_entry: CityEntry):
 
         # Ajustez la requête d'insertion pour la ville
         city_insert_query = "INSERT INTO cities (code_city, id_country, name) VALUES (%s, %s, %s)"
-
         cursor.execute(city_insert_query, (new_entry.code_city, country_id, new_entry.name))
 
         db.commit()
