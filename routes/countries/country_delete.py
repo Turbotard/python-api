@@ -1,7 +1,6 @@
 from fastapi import APIRouter, HTTPException
-from shared import request_counts
 from connectiondb import get_database_connection
-
+from shared import countries_request_counts
 countries_delete_router = APIRouter()
 
 
@@ -22,7 +21,7 @@ def delete_entry(country_to_delete: str):
     """
 
     try:
-        request_counts['delete_entry'] += 1
+        countries_request_counts['delete_entry'] += 1
 
         # Établir une connexion à la base de données
         db = get_database_connection()
@@ -37,7 +36,7 @@ def delete_entry(country_to_delete: str):
         cursor.close()
         db.close()
 
-        return {"request_count": request_counts['delete_entry'],
+        return {"countries_request_count": countries_request_counts['delete_entry'],
                 "message": f"Entrée avec le nom '{country_to_delete}' supprimée avec succès!"}
     except Exception as e:
         error_message = f"Erreur lors de la suppression de l'entrée : {str(e)}"

@@ -1,10 +1,10 @@
 from fastapi import APIRouter, HTTPException
 from connectiondb import get_database_connection
 
-weathers_router = APIRouter()
+cities_weathers_router = APIRouter()
 
 
-@weathers_router.get("/cities/weathers/{city_name}")
+@cities_weathers_router.get("/cities/weathers/{city_name}")
 def get_weather_by_city(city_name: str):
     try:
         db = get_database_connection()

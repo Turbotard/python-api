@@ -1,7 +1,6 @@
 from fastapi import APIRouter, HTTPException
-from shared import request_counts
 from connectiondb import get_database_connection  # Importez la fonction pour la connexion à la base de données
-
+from shared import countries_request_counts
 countries_get_router = APIRouter()
 
 @countries_get_router.get("/countries")
@@ -16,7 +15,7 @@ def get_all_data():
         HTTPException: En cas d'erreur lors de la récupération des données.
     """
     try:
-        request_counts['get_all_data'] += 1
+        countries_request_counts['get_all_data'] += 1
 
         # Établir une connexion à la base de données
         db = get_database_connection()
@@ -36,7 +35,7 @@ def get_all_data():
         # Créer une liste de dictionnaires pour organiser les données avec les noms de colonnes comme clés
         data_with_columns = [{column_name: value for column_name, value in zip(column_names, row)} for row in all_data]
 
-        return {"request_count": request_counts['get_all_data'], "data": data_with_columns}
+        return {"countries_request_count": countries_request_counts['get_all_data'], "data": data_with_columns}
     except Exception as e:
         error_message = f"Erreur lors de la récupération de toutes les données : {str(e)}"
         raise HTTPException(status_code=422, detail=error_message)

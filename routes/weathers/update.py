@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException
-from shared import request_counts
+from shared import weathers_request_counts
 from connectiondb import get_database_connection  # Importez la fonction pour la connexion à la base de données
 from schemas.weather_entry import WeatherEntry
 
@@ -21,7 +21,7 @@ def update_entry(date_to_update: str, updated_entry: WeatherEntry):
         HTTPException: Si une erreur survient lors de la mise à jour de l'entrée.
     """
     try:
-        request_counts['update_entry'] += 1
+        weathers_request_counts['update_entry'] += 1
 
         # Établissez la connexion à la base de données
         db = get_database_connection()
@@ -75,7 +75,7 @@ def update_entry(date_to_update: str, updated_entry: WeatherEntry):
         cursor.close()
         db.close()
 
-        return {"request_count": request_counts['update_entry'],
+        return {"weathers_request_count": weathers_request_counts['update_entry'],
                 "message": f"Entrée avec date {date_to_update} mise à jour avec succès!"}
     except Exception as e:
         error_message = f"Erreur lors de la mise à jour de l'entrée : {str(e)}"

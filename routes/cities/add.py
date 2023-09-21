@@ -1,9 +1,11 @@
-from fastapi import APIRouter, HTTPException, Body
-from pydantic import BaseModel
+from fastapi import APIRouter, HTTPException
 from connectiondb import get_database_connection
+from schemas.city_entry import CityEntry
 
-cities_router = APIRouter()
 
+cities_add_router = APIRouter()
+
+<<<<<<< Updated upstream:routes/cities/add.py
 
 # Définir le modèle Pydantic pour la requête entrante
 class City(BaseModel):
@@ -12,6 +14,13 @@ class City(BaseModel):
 
 @cities_router.post("/countries/cities/{country_name}")
 def create_city_for_country(country_name: str, city: City):
+=======
+# Modifiez le modèle pour inclure le code postale
+
+
+@cities_add_router.post("/countries/cities/{country_name}")
+def create_city_for_country(country_name: str, new_entry: CityEntry):
+>>>>>>> Stashed changes:routes/cities/city_add.py
     try:
         db = get_database_connection()
         cursor = db.cursor()
@@ -26,10 +35,17 @@ def create_city_for_country(country_name: str, city: City):
 
         country_id = country_data[0]
 
+<<<<<<< Updated upstream:routes/cities/add.py
         # Insérer la nouvelle ville avec l'id_country approprié
         city_insert_query = "INSERT INTO cities (id,id_country, name) VALUES (%s,%s, %s)"
 
         cursor.execute(city_insert_query, (city.id, country_id[0], city.name))
+=======
+        # Ajustez la requête d'insertion pour la ville
+        city_insert_query = "INSERT INTO cities (code_city, id_country, name) VALUES (%s, %s, %s)"
+
+        cursor.execute(city_insert_query, (new_entry.code_cities, country_id, new_entry.name))
+>>>>>>> Stashed changes:routes/cities/city_add.py
 
         # Valider l'insertion
         db.commit()
@@ -38,7 +54,7 @@ def create_city_for_country(country_name: str, city: City):
         db.close()
 
         return {"status": "success",
-                "message": f"La ville {city.name} a été ajoutée avec succès au pays {country_name}."}
+                "message": f"La ville {new_entry.name} a été ajoutée avec succès au pays {country_name}."}
 
     except Exception as e:
         error_message = f"Erreur lors de l'ajout de la ville : {str(e)}"

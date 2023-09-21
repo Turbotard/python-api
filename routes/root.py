@@ -1,9 +1,9 @@
 from fastapi import APIRouter, HTTPException
-from shared import request_counts
+from shared import global_request_counts
 
-weather_root_router = APIRouter()
+root_router = APIRouter()
 
-@weather_root_router.get("/")
+@root_router.get("/")
 def read_root():
     """
     Route d'accueil de l'API.
@@ -12,8 +12,8 @@ def read_root():
         dict: Un message de salutation avec le nombre de requêtes traitées.
     """
     try:
-        request_counts['root'] += 1
-        return {"request_count": request_counts['root'], "message": "Bienvenue dans l'API de données météorologiques."}
+        global_request_counts['root'] += 1
+        return {"global_request_count": global_request_counts['root'], "message": "Bienvenue dans l'API de données météorologiques."}
     except Exception as e:
         # Gérez l'exception et renvoyez une réponse d'erreur appropriée
         error_message = f"Erreur lors de la lecture de la route d'accueil : {str(e)}"

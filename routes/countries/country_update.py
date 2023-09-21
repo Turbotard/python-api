@@ -1,10 +1,7 @@
 from fastapi import APIRouter, HTTPException
-
 from schemas.country_entry import CountryEntry
-from shared import request_counts
-from connectiondb import get_database_connection  # Importez la fonction pour la connexion à la base de données
-from schemas.weather_entry import WeatherEntry
-
+from connectiondb import get_database_connection
+from shared import countries_request_counts
 countries_update_router = APIRouter()
 
 @countries_update_router.put("/countries/{country_to_update}")
@@ -33,7 +30,7 @@ def update_entry(country_to_update: str, updated_entry: CountryEntry):
     """
 
     try:
-        request_counts['update_entry'] += 1
+        countries_request_counts['update_entry'] += 1
 
         # Établissez la connexion à la base de données
         db = get_database_connection()
@@ -71,7 +68,7 @@ def update_entry(country_to_update: str, updated_entry: CountryEntry):
         cursor.close()
         db.close()
 
-        return {"request_count": request_counts['update_entry'],
+        return {"countries_request_count": countries_request_counts['update_entry'],
                 "message": f"Entrée avec date {country_to_update} mise à jour avec succès!"}
     except Exception as e:
         error_message = f"Erreur lors de la mise à jour de l'entrée : {str(e)}"

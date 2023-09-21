@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from fastapi import APIRouter, HTTPException
-from shared import request_counts
+from shared import weathers_request_counts
 from connectiondb import get_database_connection  # Importez la fonction pour la connexion à la base de données
 
 weathers_date_router = APIRouter()
@@ -23,7 +23,7 @@ def filter_by_date(start_date: str, end_date: str, order: str = "asc"):
         HTTPException: Si une erreur survient lors du filtrage par date.
     """
     try:
-        request_counts['filter_by_date'] += 1
+        weathers_request_counts['filter_by_date'] += 1
 
         # Établissez la connexion à la base de données
         db = get_database_connection()
@@ -49,7 +49,7 @@ def filter_by_date(start_date: str, end_date: str, order: str = "asc"):
             {'id': row[0], 'id_city': row[1], 'date': row[2], 'tmin': row[3], 'tmax': row[4], 'prcp': row[5],
              'snow': row[6], 'snwd': row[7], 'awnd': row[8]} for row in data]
 
-        return {"request_count": request_counts['filter_by_date'], "filtered_data": formatted_data}
+        return {"weathers_request_count": weathers_request_counts['filter_by_date'], "filtered_data": formatted_data}
     except Exception as e:
         error_message = f"Erreur lors du filtrage par date : {str(e)}"
         raise HTTPException(status_code=422, detail=error_message)

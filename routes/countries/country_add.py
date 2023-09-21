@@ -1,7 +1,8 @@
 from fastapi import APIRouter, HTTPException
 from schemas.country_entry import CountryEntry
-from shared import request_counts
 from connectiondb import get_database_connection
+from shared import countries_request_counts
+
 
 countries_add_router = APIRouter()
 
@@ -22,7 +23,7 @@ def add_country_entry(new_entry: CountryEntry):
         renvoie une exception HTTP avec un code d'état 422 et un message d'erreur détaillé.
     """
     try:
-        request_counts['add_entry'] += 1
+        countries_request_counts['add_entry'] += 1
 
         # Établir une connexion à la base de données
         db = get_database_connection()
@@ -39,7 +40,7 @@ def add_country_entry(new_entry: CountryEntry):
         cursor.close()
         db.close()
 
-        return {"request_count": request_counts['add_entry'], "message": "Nouvelle entrée de pays ajoutée avec succès!"}
+        return {"countries_request_count": countries_request_counts['add_entry'], "message": "Nouvelle entrée de pays ajoutée avec succès!"}
     except Exception as e:
         error_message = f"Erreur lors de l'ajout de l'entrée de pays : {str(e)}"
         raise HTTPException(status_code=422, detail=error_message)

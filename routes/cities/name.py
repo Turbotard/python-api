@@ -1,10 +1,9 @@
 from fastapi import APIRouter, HTTPException
-from shared import request_counts
 from connectiondb import get_database_connection
 
-cities_router = APIRouter()
+cities_name_router = APIRouter()
 
-@cities_router.get("/countries/cities/{city_name}")
+@cities_name_router.get("/countries/cities/{city_name}")
 def get_city_by_name(city_name: str):
     try:
         db = get_database_connection()
