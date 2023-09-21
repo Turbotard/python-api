@@ -3,7 +3,7 @@ from shared import cities_request_counts, global_request_counts
 from connectiondb import get_database_connection
 
 cities_delete_router = APIRouter()
-@cities_delete_router.delete("/cities/delete/{code_city}")
+@cities_delete_router.delete("/countries/cities/{code_city}")
 def delete_city_by_code(code_city: str):
     """
     Supprime une ville en fonction de son code postal.

@@ -5,7 +5,7 @@ from connectiondb import get_database_connection
 cities_weathers_router = APIRouter()
 
 
-@cities_weathers_router.get("/cities/weathers/{city_name}")
+@cities_weathers_router.get("countries/cities/weathers/name/{city_name}")
 def get_weather_by_city(city_name: str):
     """
     Récupère les données météorologiques pour une ville spécifiée par son nom.
