@@ -2,14 +2,14 @@ from fastapi import APIRouter, HTTPException, Body
 from pydantic import BaseModel
 from connectiondb import get_database_connection
 
-cities_router = APIRouter()
+cities_add_router = APIRouter()
 
 # Modifiez le modèle pour inclure le code postale
 class City(BaseModel):
     code_cities: str
     name: str
 
-@cities_router.post("/countries/cities/{country_name}")
+@cities_add_router.post("/countries/cities/{country_name}")
 def create_city_for_country(country_name: str, city: City = Body(...)):
     try:
         db = get_database_connection()

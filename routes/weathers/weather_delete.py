@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException
-from shared import request_counts
+from shared import weathers_request_counts
 from connectiondb import get_database_connection
 
 weathers_delete_router = APIRouter()
@@ -7,7 +7,7 @@ weathers_delete_router = APIRouter()
 @weathers_delete_router.delete("/countries/cities/weathers/{name_city}/{date_to_delete}")
 def delete_entry(name_city: str, date_to_delete: str):
     try:
-        request_counts['delete_entry'] += 1
+        weathers_request_counts['delete_entry'] += 1
 
         # Établissez la connexion à la base de données
         db = get_database_connection()
@@ -28,7 +28,7 @@ def delete_entry(name_city: str, date_to_delete: str):
             cursor.close()
             db.close()
 
-            return {"request_count": request_counts['delete_entry'],
+            return {"request_count": weathers_request_counts['delete_entry'],
                     "message": f"Entrée avec date {date_to_delete} pour la ville {name_city} supprimée avec succès!"}
         else:
             raise HTTPException(status_code=404, detail="Ville non trouvée dans la base de données.")
