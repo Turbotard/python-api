@@ -1,16 +1,15 @@
 from fastapi import APIRouter, HTTPException, Body
 from pydantic import BaseModel
 from connectiondb import get_database_connection
+from schemas.city_entry import CityEntry
 
 cities_add_router = APIRouter()
 
 # Modifiez le modèle pour inclure le code postale
-class City(BaseModel):
-    code_cities: str
-    name: str
+
 
 @cities_add_router.post("/countries/cities/{country_name}")
-def create_city_for_country(country_name: str, city: City = Body(...)):
+def create_city_for_country(country_name: str, new_entry: CityEntry):
     try:
         db = get_database_connection()
         cursor = db.cursor()
@@ -28,7 +27,7 @@ def create_city_for_country(country_name: str, city: City = Body(...)):
         # Ajustez la requête d'insertion pour la ville
         city_insert_query = "INSERT INTO cities (code_city, id_country, name) VALUES (%s, %s, %s)"
 
-        cursor.execute(city_insert_query, (city.code_cities, country_id, city.name))
+        cursor.execute(city_insert_query, (new_entry.code_cities, country_id, new_entry.name))
 
         db.commit()
 
@@ -36,7 +35,7 @@ def create_city_for_country(country_name: str, city: City = Body(...)):
         db.close()
 
         return {"status": "success",
-                "message": f"La ville {city.name} a été ajoutée avec succès au pays {country_name}."}
+                "message": f"La ville {new_entry.name} a été ajoutée avec succès au pays {country_name}."}
 
     except Exception as e:
         error_message = f"Erreur lors de l'ajout de la ville : {str(e)}"
