@@ -3,8 +3,8 @@ from shared import cities_request_counts, global_request_counts
 from connectiondb import get_database_connection
 from schemas.city_entry import CityEntry
 
-
 cities_update_router = APIRouter()
+
 
 @cities_update_router.put("/countries/cities/update/{old_code_city}")
 def update_city_by_code(old_code_city: str, updated_entry: CityEntry):
@@ -45,8 +45,13 @@ def update_city_by_code(old_code_city: str, updated_entry: CityEntry):
             raise HTTPException(status_code=404, detail=f"Ville avec le code postal {old_code_city} non trouvée.")
 
         # Mettre à jour la ville avec les nouvelles données
-        update_query = "UPDATE cities SET code_city = %s, name = %s WHERE code_city = %s"
-        cursor.execute(update_query, (updated_entry.code_city, updated_entry.name, old_code_city))
+        update_query = """
+            UPDATE cities 
+            SET code_city = %s, name = %s, id_country = %s 
+            WHERE code_city = %s
+            """
+        cursor.execute(update_query,
+                       (updated_entry.code_city, updated_entry.name, updated_entry.id_country, old_code_city))
 
         db.commit()
 
