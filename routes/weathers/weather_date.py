@@ -1,24 +1,28 @@
 from datetime import datetime
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, HTTPException, Query
 from shared import weathers_request_counts, global_request_counts
 from connectiondb import get_database_connection
 
 weathers_date_router = APIRouter()
 
-
-@weathers_date_router.get("/countries/cities/weathers/{start_date}/{end_date}",
-          responses={
-              400: {"description": "Format incorrect"},
-              422: {"description": "Erreur lors du filtrage"},
-              500: {"description": "Erreur interne du serveur"}
-          })
-def filter_by_date(start_date: str, end_date: str, order: str = "asc"):
+@weathers_date_router.get("/countries/cities/weathers/date",
+    responses={
+        400: {"description": "Format incorrect"},
+        422: {"description": "Erreur lors du filtrage"},
+        500: {"description": "Erreur interne du serveur"}
+    })
+def filter_by_date(
+    start_date: str = Query(None, description="La date de début au format 'YYYY-MM-DD'."),
+    end_date: str = Query(None, description="La date de fin au format 'YYYY-MM-DD'."),
+    order: str = Query("asc", description="L'ordre de tri ('asc' pour croissant ou 'desc' pour décroissant).")
+):
     """
     Filtre les données météorologiques par plage de dates.
 
     Args:
         start_date (str): La date de début au format 'YYYY-MM-DD'.
         end_date (str): La date de fin au format 'YYYY-MM-DD'.
+        order (str): L'ordre de tri ('asc' pour croissant ou 'desc' pour décroissant).
 
     Returns:
         dict: Un dictionnaire contenant le nombre de requêtes traitées et une liste d'entrées de données comprises entre les dates spécifiées.
