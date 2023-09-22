@@ -3,7 +3,24 @@ from shared import countries_request_counts
 
 statistics_countries_router = APIRouter()
 
-@statistics_countries_router.get("/statistics/countries/")
+@statistics_countries_router.get(
+    "/statistics/countries/",
+    responses={
+        200: {"description": "Statistiques récupérées avec succès",
+              "content": {"application/json": {"example": {
+                  "Statistics": "Countries",
+                  "request_count_add_entry": 100,
+                  "request_count_delete_entry": 50,
+                  "request_count_all_data": 250,
+                  "request_count_get_by_name": 120,
+                  "request_count_update_entry": 90
+              }}}
+        },
+        422: {"description": "Erreur lors de la récupération des statistiques",
+              "content": {"application/json": {"example": {"detail": "Erreur inattendue lors de la récupération des statistiques."}}}
+        }
+    }
+)
 def stats():
     """
     Route qui affiche le nombre de requêtes faites pour chaque route.

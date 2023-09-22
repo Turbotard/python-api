@@ -3,7 +3,24 @@ from shared import cities_request_counts
 
 statistics_cities_router = APIRouter()
 
-@statistics_cities_router.get("/statistics/cities")
+@statistics_cities_router.get(
+    "/statistics/cities",
+    responses={
+        200: {"description": "Statistiques récupérées avec succès",
+              "content": {"application/json": {"example": {
+                  "Statistics": "City",
+                  "request_count_add": 100,
+                  "request_count_delete": 50,
+                  "request_count_name": 120,
+                  "request_count_update": 90,
+                  "request_count_city_weathers": 200
+              }}}
+        },
+        422: {"description": "Erreur lors de la récupération des statistiques",
+              "content": {"application/json": {"example": {"detail": "Erreur inattendue lors de la récupération des statistiques."}}}
+        }
+    }
+)
 def stats():
     """
     Route qui affiche le nombre de requêtes faites pour chaque route.
