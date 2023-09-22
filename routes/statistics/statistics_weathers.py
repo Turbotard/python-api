@@ -55,7 +55,8 @@ def stats():
             "request_count_filter_by_temperature": weathers_request_counts['filter_by_temperature'],
             "request_count_add_entry": weathers_request_counts['add_entry'],
             "request_count_delete_entry": weathers_request_counts['delete_entry'],
-            "request_count_update_entry": weathers_request_counts['update_entry']
+            "request_count_update_entry": weathers_request_counts['update_entry'],
+            "request_count_patch_entry": weathers_request_counts['patch_entry']
         }
     except KeyError as e:
         # Handle the KeyError (e.g., key not found in cities_request_counts)

@@ -43,7 +43,7 @@ def update_entry(date_to_update: str, updated_entry: WeatherEntry):
         query = """
         SELECT id FROM weathers WHERE id_city = %s AND date = %s
         """
-        cursor.execute(query, (updated_entry.id_city, date_to_update))
+        cursor.execute(query, (updated_entry.id_city, updated_entry.date))
         existing_entry = cursor.fetchone()
 
         if existing_entry:

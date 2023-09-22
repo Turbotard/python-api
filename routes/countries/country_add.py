@@ -44,8 +44,9 @@ def add_country_entry(new_entry: CountryEntry):
         jusqu'à présent et un message de confirmation.
 
     Raises:
-        HTTPException (status_code=422): En cas d'erreur lors de l'ajout de l'entrée de pays,
-        renvoie une exception HTTP avec un code d'état 422 et un message d'erreur détaillé.
+        HTTPException:
+            - 422 (Unprocessable Entity): Si une erreur survient lors du filtrage par date.
+
     """
     try:
         countries_request_counts['add_entry'] += 1

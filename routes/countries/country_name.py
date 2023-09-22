@@ -57,8 +57,8 @@ def get_by_name(name: str):
         dict: Un dictionnaire contenant les données filtrées sous la clé "filtered_data".
 
     Raises:
-        HTTPException: En cas d'erreur lors du traitement de la requête, une exception HTTP
-        avec le code d'erreur 422 est levée, et les détails de l'erreur sont inclus dans la réponse.
+        HTTPException:
+            - 422 (Unprocessable Entity): Si une erreur survient lors du filtrage par date.
     """
     try:
         countries_request_counts['get_by_name'] += 1
