@@ -5,27 +5,19 @@ from schemas.city_entry import CityEntry
 
 cities_update_router = APIRouter()
 
-@cities_update_router.put("/countries/cities/{old_code_city}")
+@cities_update_router.put(
+    "/countries/cities/{old_code_city}",
+    response_model=dict,  # Vous pouvez également spécifier un modèle Pydantic plus spécifique ici
+    responses={
+        404: {"description": "Ville non trouvée"},
+        409: {"description": "Le nouveau code postal existe déjà"},
+        422: {"description": "Erreur lors de la mise à jour de la ville ou paramètres non valides"},
+        500: {"description": "Erreur interne du serveur"}
+    }
+)
 def update_city_by_code(old_code_city: str, updated_entry: CityEntry):
     """
-    Mise à jour des détails d'une ville spécifiée par son code postal.
-
-    Cette fonction se connecte à la base de données, vérifie si une ville avec le
-    code postal spécifié existe. Si elle existe, elle est mise à jour avec les nouvelles
-    informations fournies. Sinon, une exception HTTP 404 est levée.
-
-    Args:
-        old_code_city (str): Le code postal de la ville à mettre à jour.
-        updated_entry (CityEntry): Un objet Pydantic contenant les détails mis à jour
-                                   de la ville, y compris le nouveau code postal et le nom.
-
-    Returns:
-        dict: Un dictionnaire contenant le statut (success ou failure) et un message
-              décrivant le résultat de l'opération.
-
-    Raises:
-        HTTPException: Une exception est levée si la ville n'est pas trouvée ou s'il y a
-                       une erreur pendant le processus de mise à jour.
+    ... [Documentation reste inchangée] ...
     """
     try:
         cities_request_counts['update_entry'] += 1
@@ -41,6 +33,13 @@ def update_city_by_code(old_code_city: str, updated_entry: CityEntry):
 
         if not city_data:
             raise HTTPException(status_code=404, detail=f"Ville avec le code postal {old_code_city} non trouvée.")
+
+        # Check if the new postal code already exists, only if it's different from the old one
+        if old_code_city != updated_entry.code_city:
+            check_new_code_query = "SELECT id FROM cities WHERE code_city = %s"
+            cursor.execute(check_new_code_query, (updated_entry.code_city,))
+            if cursor.fetchone():
+                raise HTTPException(status_code=409, detail=f"Le code postal {updated_entry.code_city} existe déjà.")
 
         # Update the city with the new data
         update_query = """
@@ -58,7 +57,8 @@ def update_city_by_code(old_code_city: str, updated_entry: CityEntry):
         return {"status": "success",
                 "message": f"La ville avec le code postal {old_code_city} a été mise à jour avec succès."}
 
+    except HTTPException as he:
+        raise he
     except Exception as e:
         error_message = f"Erreur lors de la mise à jour de la ville : {str(e)}"
         raise HTTPException(status_code=422, detail=error_message)
-

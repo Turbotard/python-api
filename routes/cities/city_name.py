@@ -4,7 +4,15 @@ from connectiondb import get_database_connection
 
 cities_name_router = APIRouter()
 
-@cities_name_router.get("/countries/cities/name/{name}")
+@cities_name_router.get(
+    "/countries/cities/name/{name}",
+    response_model=dict,  # Ici, vous pouvez spécifier un modèle Pydantic pour une documentation plus précise
+    responses={
+        404: {"description": "Ville non trouvée"},
+        422: {"description": "Erreur lors de la recherche de la ville ou paramètres non valides"},
+        500: {"description": "Erreur interne du serveur"}
+    }
+)
 def get_city_by_name(name: str):
     """
     Récupère les détails d'une ville spécifiée par son nom.
@@ -42,12 +50,14 @@ def get_city_by_name(name: str):
         db.close()
 
         if not data:
-            raise HTTPException(status_code=404, detail=f"Aucune ville nommée {name} trouvée.")
+            raise HTTPException(status_code=404, detail=f"Ville nommée {name} non trouvée.")
 
         city_data = {'Code City': data[1], 'Name': data[3]}
 
         return {"city_name": city_data}
 
+    except HTTPException:
+        raise
     except Exception as e:
         error_message = f"Erreur lors de la recherche par nom de ville : {str(e)}"
         raise HTTPException(status_code=422, detail=error_message)

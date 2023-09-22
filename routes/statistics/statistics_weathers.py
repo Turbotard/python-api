@@ -3,7 +3,34 @@ from shared import weathers_request_counts
 
 statistics_weather_router = APIRouter()
 
-@statistics_weather_router.get("/statistics/weathers")
+
+@statistics_weather_router.get("/statistics/weathers",
+                               responses={
+                                   200: {
+                                       "description": "Statistiques récupérées avec succès",
+                                       "content": {
+                                           "application/json": {
+                                               "example": {
+                                                   "Statistics": "Weathers",
+                                                   "request_count_all_data": 123,
+                                                   "request_count_filter_by_date": 45,
+                                               }
+                                           }
+                                       }
+                                   },
+                                   422: {
+                                       "description": "Erreur lors de la récupération des statistiques",
+                                       "content": {
+                                           "application/json": {
+                                               "example": {
+                                                   "detail": "Erreur inattendue lors de la récupération des statistiques."
+                                               }
+                                           }
+                                       }
+                                   }
+                               }
+
+                               )
 def stats():
     """
     Route qui affiche le nombre de requêtes faites pour chaque route.

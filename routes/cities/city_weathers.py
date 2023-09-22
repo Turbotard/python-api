@@ -4,8 +4,14 @@ from connectiondb import get_database_connection
 
 cities_weathers_router = APIRouter()
 
-
-@cities_weathers_router.get("/countries/cities/cityweathers/name/{city_name}")
+@cities_weathers_router.get(
+    "/countries/cities/cityweathers/name/{city_name}",
+    responses={
+        404: {"description": "Ville non trouvée ou pas de données météorologiques pour cette ville"},
+        422: {"description": "Paramètres non valides"},
+        500: {"description": "Erreur interne du serveur"}
+    }
+)
 def get_weather_by_city(city_name: str):
     """
     Récupère les données météorologiques pour une ville spécifiée par son nom.
@@ -28,7 +34,6 @@ def get_weather_by_city(city_name: str):
                        ne sont pas trouvées, ou s'il y a une erreur pendant le processus
                        de récupération.
     """
-
     try:
         cities_request_counts['city_weathers_entry'] += 1
         global_request_counts['Cities_city_weathers_entry'] += 1

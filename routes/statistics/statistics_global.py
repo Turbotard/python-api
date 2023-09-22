@@ -3,7 +3,20 @@ from shared import global_request_counts, global_request_counts, global_request_
 
 statistics_router = APIRouter()
 
-@statistics_router.get("/statistics")
+
+@statistics_router.get("/statistics",
+                       responses={
+                           200: {"description": "Statistiques récupérées avec succès",
+                                 "content": {"application/json": {"example": {
+                                     "Statistics 1": "Root",
+                                     "request_count_root": 123,
+                                 }}}
+                                 },
+                           422: {"description": "Erreur lors de la récupération des statistiques",
+                                 "content": {"application/json": {"example": {
+                                     "detail": "Erreur inattendue lors de la récupération des statistiques."}}}
+                                 }
+                       })
 def stats():
     """
     Route qui affiche le nombre de requêtes faites pour chaque route.
