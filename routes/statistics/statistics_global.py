@@ -47,7 +47,8 @@ def stats():
             "Weathers_request_count_filter_by_temperature": global_request_counts['Weathers_filter_by_temperature'],
             "Weathers_request_count_add_entry": global_request_counts['Weathers_add_entry'],
             "Weathers_request_count_delete_entry": global_request_counts['Weathers_delete_entry'],
-            "Weathers_request_count_update_entry": global_request_counts['Weathers_update_entry']
+            "Weathers_request_count_update_entry": global_request_counts['Weathers_update_entry'],
+            "Weathers_request_count_patch_entry": global_request_counts['Weathers_patch_entry']
         }
     except Exception as e:
         # Gérez l'exception et renvoyez une réponse d'erreur appropriée
