@@ -18,6 +18,7 @@ global_request_counts = {
     'Weathers_filter_by_precipitation': 0,
     'Weathers_filter_by_temperature': 0,
     'Weathers_update_entry': 0,
+    'Weathers_patch_entry': 0,
 
 }
 
@@ -45,4 +46,5 @@ weathers_request_counts = {
     'filter_by_precipitation': 0,
     'filter_by_temperature': 0,
     'update_entry': 0,
+    'patch_entry': 0,
 }
