@@ -1,10 +1,15 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, status
 from shared import weathers_request_counts, global_request_counts
 from connectiondb import get_database_connection
 
 weathers_delete_router = APIRouter()
 
-@weathers_delete_router.delete("/countries/cities/weathers/{name_city}/{date_to_delete}")
+@weathers_delete_router.delete("/countries/cities/weathers/{name_city}/{date_to_delete}",
+           responses={
+               404: {"description": "Ville non trouvé"},
+               422: {"description": "Erreur lors de la suppression de l'entrée"},
+               500: {"description": "Erreur interne du serveur"}
+           })
 def delete_entry(name_city: str, date_to_delete: str):
     """
     Supprime une entrée de données météorologiques par date pour une ville donnée.
@@ -17,7 +22,10 @@ def delete_entry(name_city: str, date_to_delete: str):
         dict: Un dictionnaire contenant le nombre de requêtes traitées et un message de confirmation.
 
     Raises:
-        HTTPException: Si une erreur survient lors de la suppression de l'entrée ou si la ville n'est pas trouvée.
+        HTTPException:
+            - 404 (Not Found): Si la ville n'est pas trouvée dans la base de données.
+            - 422 (Unprocessable Entity): Si une erreur survient lors de la suppression de l'entrée.
+            - 500 (Internal Server Error): Si une erreur inattendue se produit.
     """
     try:
         weathers_request_counts['delete_entry'] += 1
@@ -46,6 +54,9 @@ def delete_entry(name_city: str, date_to_delete: str):
                     "message": f"Entrée avec date {date_to_delete} pour la ville {name_city} supprimée avec succès!"}
         else:
             raise HTTPException(status_code=404, detail="Ville non trouvée dans la base de données.")
+    except HTTPException as http_err:
+        # Capturez les exceptions HTTP personnalisées et réémettez-les telles quelles
+        raise http_err
     except Exception as e:
         error_message = f"Erreur lors de la suppression de l'entrée : {str(e)}"
-        raise HTTPException(status_code=422, detail=error_message)
+        raise HTTPException(status_code=500, detail=error_message)

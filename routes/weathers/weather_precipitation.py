@@ -5,8 +5,12 @@ from connectiondb import get_database_connection
 
 weathers_precipitation_router = APIRouter()
 
-
-@weathers_precipitation_router.get("/countries/cities/weathers/precipitation/{min_prcp}/{max_prcp}")
+@weathers_precipitation_router.get("/countries/cities/weathers/precipitation/{min_prcp}/{max_prcp}",
+    responses={
+        422: {"description": "Erreur lors du filtrage par précipitations"},
+        500: {"description": "Erreur interne du serveur"}
+    }
+)
 def filter_by_precipitation(min_prcp: Optional[float] = None, max_prcp: Optional[float] = None, order: str = "asc"):
     """
     Filtrer les données météorologiques par plage de précipitations.
@@ -20,7 +24,9 @@ def filter_by_precipitation(min_prcp: Optional[float] = None, max_prcp: Optional
         dict: Un dictionnaire contenant le nombre de requêtes traitées et une liste d'entrées de données filtrées en fonction des précipitations spécifiées.
 
     Raises:
-        HTTPException: Si une erreur survient lors du filtrage par précipitations.
+        HTTPException:
+            - 422 (Unprocessable Entity): Si une erreur survient lors du filtrage par précipitations.
+            - 500 (Internal Server Error): Si une erreur interne du serveur se produit.
     """
     try:
         weathers_request_counts['filter_by_precipitation'] += 1
@@ -62,6 +68,9 @@ def filter_by_precipitation(min_prcp: Optional[float] = None, max_prcp: Optional
         db.close()
 
         return {"weathers_request_count": weathers_request_counts['filter_by_precipitation'], "filtered_data": data}
+    except HTTPException as http_err:
+        # Capturez les exceptions HTTP personnalisées et réémettez-les telles quelles
+        raise http_err
     except Exception as e:
         error_message = f"Erreur lors du filtrage par précipitations : {str(e)}"
-        raise HTTPException(status_code=422, detail=error_message)
+        raise HTTPException(status_code=500, detail=error_message)

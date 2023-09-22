@@ -4,8 +4,12 @@ from connectiondb import get_database_connection
 
 weathers_temperature_router = APIRouter()
 
-# Modifiez votre route pour utiliser la base de données
-@weathers_temperature_router.get("/countries/cities/weathers/{temp}")
+@weathers_temperature_router.get("/countries/cities/weathers/{temp}",
+    responses={
+        422: {"description": "Erreur lors du filtrage par température"},
+        500: {"description": "Erreur interne du serveur"}
+    }
+)
 def filter_by_temperature(temp: float, order: str = "asc"):
     """
     Récupère les données météorologiques en fonction de la température.
@@ -18,7 +22,9 @@ def filter_by_temperature(temp: float, order: str = "asc"):
         dict: Un dictionnaire contenant le nombre de requêtes traitées et les données météorologiques filtrées.
 
     Raises:
-        HTTPException: Si une erreur survient lors du filtrage des données.
+        HTTPException:
+            - 422 (Unprocessable Entity): Si une erreur survient lors du filtrage des données.
+            - 500 (Internal Server Error): Si une erreur interne du serveur se produit.
     """
     try:
         weathers_request_counts['filter_by_temperature'] += 1
@@ -43,6 +49,9 @@ def filter_by_temperature(temp: float, order: str = "asc"):
         formatted_data = [{'id': row[0], 'id_city': row[1], 'date': row[2], 'tmin': row[3], 'tmax': row[4], 'prcp': row[5], 'snow': row[6], 'snwd': row[7], 'awnd': row[8]} for row in data]
 
         return {"weathers_request_count": weathers_request_counts['filter_by_temperature'], "filtered_data": formatted_data}
+    except HTTPException as http_err:
+        # Capturez les exceptions HTTP personnalisées et réémettez-les telles quelles
+        raise http_err
     except Exception as e:
         error_message = f"Erreur lors du filtrage par température : {str(e)}"
-        raise HTTPException(status_code=422, detail=error_message)
+        raise HTTPException(status_code=500, detail=error_message)
