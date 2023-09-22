@@ -1,18 +1,19 @@
-from fastapi import APIRouter, HTTPException
+from typing import Optional
+from fastapi import APIRouter, HTTPException, Query
 from shared import cities_request_counts, global_request_counts
 from connectiondb import get_database_connection
 
 cities_weathers_router = APIRouter()
 
 @cities_weathers_router.get(
-    "/countries/cities/cityweathers/name/{city_name}",
+    "/countries/cities/cityweathers",
     responses={
         404: {"description": "Ville non trouvée ou pas de données météorologiques pour cette ville"},
         422: {"description": "Paramètres non valides"},
         500: {"description": "Erreur interne du serveur"}
     }
 )
-def get_weather_by_city(city_name: str):
+def get_weather_by_city(city_name: Optional[str] = Query(None, description="Le nom de la ville pour laquelle les données météorologiques doivent être récupérées.")):
     """
     Récupère les données météorologiques pour une ville spécifiée par son nom.
 
@@ -34,6 +35,10 @@ def get_weather_by_city(city_name: str):
                        ne sont pas trouvées, ou s'il y a une erreur pendant le processus
                        de récupération.
     """
+
+    if city_name is None:
+        raise HTTPException(status_code=422, detail="Veuillez fournir un nom de ville.")
+
     try:
         cities_request_counts['city_weathers_entry'] += 1
         global_request_counts['Cities_city_weathers_entry'] += 1
@@ -46,7 +51,7 @@ def get_weather_by_city(city_name: str):
         cursor.execute(city_query, (city_name,))
 
         city_data = cursor.fetchone()
-        print(city_data)
+
         if not city_data:
             raise HTTPException(status_code=404, detail=f"Aucune ville nommée {city_name} trouvée.")
 
