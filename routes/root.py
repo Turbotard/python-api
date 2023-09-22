@@ -3,6 +3,7 @@ from shared import global_request_counts
 
 root_router = APIRouter()
 
+
 @root_router.get("/")
 def read_root():
     """
@@ -10,10 +11,15 @@ def read_root():
 
     Returns:
         dict: Un message de salutation avec le nombre de requêtes GET traitées.
+
+    Raises:
+        HTTPException:
+            - 422 (Unprocessable Entity): Si une erreur survient lors de la lecture de la route d'accueil.
     """
     try:
         global_request_counts['Root'] += 1
-        return {"global_request_count": global_request_counts['Root'], "message": "Bienvenue dans l'API de données météorologiques (GET)."}
+        return {"global_request_count": global_request_counts['Root'],
+                "message": "Bienvenue dans l'API de données météorologiques (GET)."}
 
     except Exception as e:
         error_message = f"Erreur lors de la lecture de la route d'accueil (GET) : {str(e)}"
