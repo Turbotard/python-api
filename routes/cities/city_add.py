@@ -5,10 +5,15 @@ from shared import cities_request_counts, global_request_counts
 
 cities_add_router = APIRouter()
 
-# Modifiez le modèle pour inclure le code postale
-
-
-@cities_add_router.post("/countries/cities/{country_name}")
+@cities_add_router.post(
+    "/countries/cities/{country_name}",
+    responses={
+        404: {"description": "Pays non trouvé"},
+        409: {"description": "La ville existe déjà pour ce pays"},
+        422: {"description": "Erreur lors de l'ajout de la ville ou paramètres non valides"},
+        500: {"description": "Erreur interne du serveur"}
+    }
+)
 def create_city_for_country(country_name: str, new_entry: CityEntry):
     """
     Ajoute une nouvelle ville à un pays spécifié.
@@ -29,8 +34,10 @@ def create_city_for_country(country_name: str, new_entry: CityEntry):
               un message décrivant le résultat de l'opération.
 
     Raises:
-        HTTPException: Une exception est levée si le pays n'est pas trouvé
-                       ou s'il y a une erreur pendant le processus d'insertion.
+        HTTPException:
+            - Une exception est levée si le pays n'est pas trouvé (code 404).
+            - Une exception est levée si la ville existe déjà (code 409).
+            - Une exception est levée pour d'autres erreurs pendant le processus d'insertion (code 422).
     """
 
     try:
@@ -50,7 +57,15 @@ def create_city_for_country(country_name: str, new_entry: CityEntry):
 
         country_id = country_data[0]
 
-        # Ajustez la requête d'insertion pour la ville
+        # Vérifiez si la ville existe déjà
+        city_check_query = "SELECT * FROM cities WHERE code_city = %s AND id_country = %s"
+        cursor.execute(city_check_query, (new_entry.code_city, country_id))
+        city_data = cursor.fetchone()
+
+        if city_data:
+            raise HTTPException(status_code=409, detail=f"La ville avec le code {new_entry.code_city} existe déjà pour le pays {country_name}.")
+
+        # Insérez la nouvelle ville
         city_insert_query = "INSERT INTO cities (code_city, id_country, name) VALUES (%s, %s, %s)"
         cursor.execute(city_insert_query, (new_entry.code_city, country_id, new_entry.name))
 
@@ -62,6 +77,8 @@ def create_city_for_country(country_name: str, new_entry: CityEntry):
         return {"status": "success",
                 "message": f"La ville {new_entry.name} a été ajoutée avec succès au pays {country_name}."}
 
+    except HTTPException:
+        raise
     except Exception as e:
         error_message = f"Erreur lors de l'ajout de la ville : {str(e)}"
         raise HTTPException(status_code=422, detail=error_message)
