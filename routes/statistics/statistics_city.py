@@ -16,9 +16,12 @@ statistics_cities_router = APIRouter()
                   "request_count_city_weathers": 200
               }}}
         },
+        404: {"description": "statistics non trouvées ou pas de données pour cette ville"},
         422: {"description": "Erreur lors de la récupération des statistiques",
               "content": {"application/json": {"example": {"detail": "Erreur inattendue lors de la récupération des statistiques."}}}
-        }
+        },
+        500: {"description": "Erreur interne du serveur"},
+
     }
 )
 def stats():
@@ -37,6 +40,10 @@ def stats():
             "request_count_update": cities_request_counts['update_entry'],
             "request_count_city_weathers": cities_request_counts['city_weathers_entry']
         }
+    except KeyError as e:
+        # Handle the KeyError (e.g., key not found in cities_request_counts)
+        error_message = f"Clé introuvable dans cities_request_counts : {str(e)}"
+        raise HTTPException(status_code=404, detail=error_message)
     except Exception as e:
         # Gérez l'exception et renvoyez une réponse d'erreur appropriée
         error_message = f"Erreur lors de la récupération des statistiques : {str(e)}"
