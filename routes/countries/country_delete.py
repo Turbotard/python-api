@@ -1,10 +1,36 @@
 from fastapi import APIRouter, HTTPException
 from connectiondb import get_database_connection
 from shared import countries_request_counts, global_request_counts
+
 countries_delete_router = APIRouter()
 
 
-@countries_delete_router.delete("/countries/{country_to_delete}")
+@countries_delete_router.delete("/countries/{country_to_delete}",
+                                response_model=dict,
+                                # Optionnel : Vous pouvez définir un modèle de réponse précis si nécessaire.
+                                responses={
+                                    200: {
+                                        "description": "Entrée de pays supprimée avec succès",
+                                        "content": {
+                                            "application/json": {
+                                                "example": {
+                                                    "countries_request_count": 1,
+                                                    "message": "Entrée avec le nom 'France' supprimée avec succès!"
+                                                }
+                                            }
+                                        }
+                                    },
+                                    422: {
+                                        "description": "Erreur lors de la suppression de l'entrée",
+                                        "content": {
+                                            "application/json": {
+                                                "example": {
+                                                    "detail": "Erreur inattendue lors de la suppression de l'entrée."
+                                                }
+                                            }
+                                        }
+                                    }
+                                })
 def delete_entry(country_to_delete: str):
     """
     Supprime une entrée de la base de données pour le pays spécifié.

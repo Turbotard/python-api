@@ -2,9 +2,36 @@ from fastapi import APIRouter, HTTPException
 from schemas.country_entry import CountryEntry
 from connectiondb import get_database_connection
 from shared import countries_request_counts, global_request_counts
+
 countries_update_router = APIRouter()
 
-@countries_update_router.put("/countries/{country_to_update}")
+
+@countries_update_router.put("/countries/{country_to_update}",
+                             response_model=dict,
+                             # Optionnel : Vous pouvez définir un modèle de réponse précis si nécessaire.
+                             responses={
+                                 200: {
+                                     "description": "Données du pays mises à jour avec succès.",
+                                     "content": {
+                                         "application/json": {
+                                             "example": {
+                                                 "countries_request_count": 15,
+                                                 "message": "Entrée avec date France mise à jour avec succès!"
+                                             }
+                                         }
+                                     }
+                                 },
+                                 422: {
+                                     "description": "Erreur lors de la mise à jour des données du pays.",
+                                     "content": {
+                                         "application/json": {
+                                             "example": {
+                                                 "detail": "Erreur inattendue lors de la mise à jour de l'entrée."
+                                             }
+                                         }
+                                     }
+                                 }
+                             })
 def update_entry(country_to_update: str, updated_entry: CountryEntry):
     """
     Mettre à jour ou ajouter une entrée de pays dans la base de données.

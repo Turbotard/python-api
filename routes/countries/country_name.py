@@ -4,7 +4,48 @@ from shared import countries_request_counts, global_request_counts
 
 countries_name_router = APIRouter()
 
-@countries_name_router.get("/countries/name/{name}")
+
+@countries_name_router.get("/countries/name/{name}",
+                           response_model=dict,
+                           # Optionnel : Vous pouvez définir un modèle de réponse précis si nécessaire.
+                           responses={
+                               200: {
+                                   "description": "Données du pays filtrées par nom récupérées avec succès.",
+                                   "content": {
+                                       "application/json": {
+                                           "example": {
+                                               "filtered_data": [
+                                                   {
+                                                       "id": 1,
+                                                       "code_country": "FR",
+                                                       "name": "France"
+                                                   }
+                                               ]
+                                           }
+                                       }
+                                   }
+                               },
+                               404: {
+                                   "description": "Aucun pays correspondant au nom fourni n'a été trouvé.",
+                                   "content": {
+                                       "application/json": {
+                                           "example": {
+                                               "detail": "Country with name 'NomInexistant' not found."
+                                           }
+                                       }
+                                   }
+                               },
+                               422: {
+                                   "description": "Erreur lors de la récupération des données filtrées.",
+                                   "content": {
+                                       "application/json": {
+                                           "example": {
+                                               "detail": "Erreur inattendue lors de la récupération des données filtrées."
+                                           }
+                                       }
+                                   }
+                               }
+                           })
 def get_by_name(name: str):
     """
     Endpoint permettant de filtrer des données de pays par nom.
@@ -41,7 +82,7 @@ def get_by_name(name: str):
         # Transformez les résultats en un format approprié (par exemple, liste de dictionnaires)
         formatted_data = [{'id': data[0], 'code_country': data[1], 'name': data[2]}]
 
-        return { "filtered_data": formatted_data}
+        return {"filtered_data": formatted_data}
     except Exception as e:
         error_message = f"Erreur lors du filtrage par nom : {str(e)}"
         raise HTTPException(status_code=422, detail=error_message)

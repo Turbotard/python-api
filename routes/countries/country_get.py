@@ -1,9 +1,45 @@
 from fastapi import APIRouter, HTTPException
 from connectiondb import get_database_connection
 from shared import countries_request_counts, global_request_counts
+
 countries_get_router = APIRouter()
 
-@countries_get_router.get("/countries")
+
+@countries_get_router.get("/countries",
+                          response_model=dict,
+                          # Optionnel : Vous pouvez définir un modèle de réponse précis si nécessaire.
+                          responses={
+                              200: {
+                                  "description": "Données des pays récupérées avec succès",
+                                  "content": {
+                                      "application/json": {
+                                          "example": {
+                                              "countries_request_count": 10,
+                                              "data": [
+                                                  {
+                                                      "code_country": "FR",
+                                                      "name": "France"
+                                                  },
+                                                  {
+                                                      "code_country": "DE",
+                                                      "name": "Allemagne"
+                                                  }
+                                              ]
+                                          }
+                                      }
+                                  }
+                              },
+                              422: {
+                                  "description": "Erreur lors de la récupération des données",
+                                  "content": {
+                                      "application/json": {
+                                          "example": {
+                                              "detail": "Erreur inattendue lors de la récupération des données."
+                                          }
+                                      }
+                                  }
+                              }
+                          })
 def get_all_data():
     """
     Récupère toutes les données des pays depuis la base de données.
