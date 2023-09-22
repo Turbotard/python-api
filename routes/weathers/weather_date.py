@@ -1,8 +1,7 @@
 from datetime import datetime
-
 from fastapi import APIRouter, HTTPException
-from shared import request_counts
-from connectiondb import get_database_connection  # Importez la fonction pour la connexion à la base de données
+from shared import weathers_request_counts, global_request_counts
+from connectiondb import get_database_connection
 
 weathers_date_router = APIRouter()
 
@@ -23,15 +22,12 @@ def filter_by_date(start_date: str, end_date: str, order: str = "asc"):
         HTTPException: Si une erreur survient lors du filtrage par date.
     """
     try:
-        request_counts['filter_by_date'] += 1
+        weathers_request_counts['filter_by_date'] += 1
+        global_request_counts['Weathers_filter_by_date'] += 1
 
         # Établissez la connexion à la base de données
         db = get_database_connection()
         cursor = db.cursor()
-
-        # Convertir les dates en objets datetime
-        start_datetime = datetime.strptime(start_date, "%Y-%m-%d")
-        end_datetime = datetime.strptime(end_date, "%Y-%m-%d")
 
         # Exécutez une requête SQL pour récupérer les données filtrées
         query = f"SELECT * FROM weathers WHERE date BETWEEN '{start_date}' AND '{end_date}' ORDER BY date {'DESC' if order == 'desc' else 'ASC'}"
@@ -49,7 +45,7 @@ def filter_by_date(start_date: str, end_date: str, order: str = "asc"):
             {'id': row[0], 'id_city': row[1], 'date': row[2], 'tmin': row[3], 'tmax': row[4], 'prcp': row[5],
              'snow': row[6], 'snwd': row[7], 'awnd': row[8]} for row in data]
 
-        return {"request_count": request_counts['filter_by_date'], "filtered_data": formatted_data}
+        return {"weathers_request_count": weathers_request_counts['filter_by_date'], "filtered_data": formatted_data}
     except Exception as e:
         error_message = f"Erreur lors du filtrage par date : {str(e)}"
         raise HTTPException(status_code=422, detail=error_message)

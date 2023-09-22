@@ -1,12 +1,38 @@
 from fastapi import APIRouter, HTTPException
+from shared import cities_request_counts, global_request_counts
 from connectiondb import get_database_connection
 
-weathers_router = APIRouter()
+cities_weathers_router = APIRouter()
 
 
-@weathers_router.get("/cities/weathers/{city_name}")
+@cities_weathers_router.get("/countries/cities/cityweathers/name/{city_name}")
 def get_weather_by_city(city_name: str):
+    """
+    Récupère les données météorologiques pour une ville spécifiée par son nom.
+
+    Cette fonction se connecte à la base de données, recherche une ville par
+    son nom et renvoie toutes les données météorologiques associées à cette ville.
+    Si la ville ou les données météorologiques ne sont pas trouvées, une exception
+    HTTP 404 est levée.
+
+    Args:
+        city_name (str): Le nom de la ville pour laquelle les données météorologiques
+                         doivent être récupérées.
+
+    Returns:
+        dict: Un dictionnaire contenant le nom de la ville et une liste de toutes les
+              données météorologiques associées à cette ville.
+
+    Raises:
+        HTTPException: Une exception est levée si la ville ou ses données météorologiques
+                       ne sont pas trouvées, ou s'il y a une erreur pendant le processus
+                       de récupération.
+    """
+
     try:
+        cities_request_counts['city_weathers_entry'] += 1
+        global_request_counts['Cities_city_weathers_entry'] += 1
+
         db = get_database_connection()
         cursor = db.cursor()
 

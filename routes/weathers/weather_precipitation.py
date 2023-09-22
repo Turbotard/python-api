@@ -1,7 +1,7 @@
 from typing import Optional
 from fastapi import APIRouter, HTTPException
-from shared import request_counts
-from connectiondb import get_database_connection  # Importez la fonction pour la connexion à la base de données
+from shared import weathers_request_counts, global_request_counts
+from connectiondb import get_database_connection
 
 weathers_precipitation_router = APIRouter()
 
@@ -23,7 +23,8 @@ def filter_by_precipitation(min_prcp: Optional[float] = None, max_prcp: Optional
         HTTPException: Si une erreur survient lors du filtrage par précipitations.
     """
     try:
-        request_counts['filter_by_precipitation'] += 1
+        weathers_request_counts['filter_by_precipitation'] += 1
+        global_request_counts['Weathers_filter_by_precipitation'] += 1
 
         # Établissez la connexion à la base de données
         db = get_database_connection()
@@ -60,7 +61,7 @@ def filter_by_precipitation(min_prcp: Optional[float] = None, max_prcp: Optional
         cursor.close()
         db.close()
 
-        return {"request_count": request_counts['filter_by_precipitation'], "filtered_data": data}
+        return {"weathers_request_count": weathers_request_counts['filter_by_precipitation'], "filtered_data": data}
     except Exception as e:
         error_message = f"Erreur lors du filtrage par précipitations : {str(e)}"
         raise HTTPException(status_code=422, detail=error_message)

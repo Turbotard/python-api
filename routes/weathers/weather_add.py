@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException
-from shared import request_counts
-from connectiondb import get_database_connection  # Importez la fonction pour la connexion à la base de données
-from weather_entry import WeatherEntry
+from shared import weathers_request_counts, global_request_counts
+from connectiondb import get_database_connection
+from schemas.weather_entry import WeatherEntry
 
 weathers_add_router = APIRouter()
 
@@ -21,7 +21,8 @@ def add_entry(name_city: str, new_entry: WeatherEntry):
         HTTPException: Si une erreur survient lors de l'ajout de l'entrée.
     """
     try:
-        request_counts['add_entry'] += 1
+        weathers_request_counts['add_entry'] += 1
+        global_request_counts['Weathers_add_entry'] += 1
 
         # Établissez la connexion à la base de données
         db = get_database_connection()
@@ -55,7 +56,7 @@ def add_entry(name_city: str, new_entry: WeatherEntry):
             cursor.close()
             db.close()
 
-            return {"request_count": request_counts['add_entry'], "message": "Nouvelle entrée ajoutée avec succès!"}
+            return {"weathers_request_count": weathers_request_counts['add_entry'], "message": "Nouvelle entrée ajoutée avec succès!"}
         else:
             raise HTTPException(status_code=404, detail="Ville non trouvée dans la base de données.")
     except Exception as e:
