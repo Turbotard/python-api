@@ -4,7 +4,7 @@ from connectiondb import get_database_connection
 
 weathers_data_router = APIRouter()
 
-@weathers_data_router.get("/countries/cities/weathers",
+@weathers_data_router.get("/countries/cities/weathers/",
     responses={
         404: {"description": "Aucune donnée météorologique trouvée"},
         422: {"description": "Erreur lors de la récupération des données"},
