@@ -1,16 +1,19 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Query
 from shared import weathers_request_counts, global_request_counts
 from connectiondb import get_database_connection
 
 weathers_temperature_router = APIRouter()
 
-@weathers_temperature_router.get("/countries/cities/weathers/{temp}",
+@weathers_temperature_router.get("/countries/cities/weathers/temperature",
     responses={
         422: {"description": "Erreur lors du filtrage par température"},
         500: {"description": "Erreur interne du serveur"}
     }
 )
-def filter_by_temperature(temp: float, order: str = "asc"):
+def filter_by_temperature(
+    temp: float = Query(..., description="La température pour filtrer les données."),
+    order: str = "asc"
+):
     """
     Récupère les données météorologiques en fonction de la température.
 
