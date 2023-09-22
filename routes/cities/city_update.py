@@ -17,8 +17,30 @@ cities_update_router = APIRouter()
 )
 def update_city_by_code(old_code_city: str, updated_entry: CityEntry):
     """
-    ... [Documentation reste inchangée] ...
+    Met à jour les informations d'une ville en utilisant son code postal.
+
+    Cette fonction reçoit le code postal actuel d'une ville et les nouvelles
+    informations sous forme d'une entrée "CityEntry". Elle vérifie d'abord si la ville
+    avec ce code postal existe. Si elle existe, la fonction met à jour les informations
+    de la ville en utilisant les données fournies dans "updated_entry". Si le code postal
+    spécifié dans "updated_entry" est différent de "old_code_city" et qu'il existe déjà
+    dans la base de données, une exception HTTP 409 est levée.
+
+    Args:
+        old_code_city (str): Le code postal actuel de la ville à mettre à jour.
+        updated_entry (CityEntry): Les nouvelles informations pour la ville.
+
+    Returns:
+        dict: Un dictionnaire contenant le statut de la mise à jour et un message.
+
+    Raises:
+        HTTPException:
+            - 404 (Not Found): Si aucune ville avec le code postal spécifié n'est trouvée.
+            - 409 (Conflict): Si le nouveau code postal existe déjà.
+            - 422 (Unprocessable Entity): Si une erreur survient lors de la mise à jour de la ville.
+            - 500 (Internal Server Error): Si une erreur interne du serveur se produit.
     """
+
     try:
         cities_request_counts['update_entry'] += 1
         global_request_counts['Cities_update_entry'] += 1
