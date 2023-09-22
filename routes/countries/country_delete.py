@@ -43,7 +43,8 @@ def delete_entry(country_to_delete: str):
         et un message de confirmation.
 
     Raises:
-        HTTPException(422): Si une erreur se produit lors de la suppression de l'entrée.
+        HTTPException:
+            - 422 (Unprocessable Entity): Si une erreur survient lors du filtrage par date.
     """
 
     try:

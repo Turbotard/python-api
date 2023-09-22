@@ -48,7 +48,8 @@ def get_all_data():
         dict: Un dictionnaire contenant le nombre de demandes effectuées et les données des pays.
 
     Raises:
-        HTTPException: En cas d'erreur lors de la récupération des données.
+        HTTPException:
+            - 422 (Unprocessable Entity): Si une erreur survient lors du filtrage par date.
     """
     try:
         countries_request_counts['get_all_data'] += 1

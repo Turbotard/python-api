@@ -44,7 +44,8 @@ def update_entry(country_to_update: str, updated_entry: CountryEntry):
         dict: Un dictionnaire contenant le nombre de requêtes effectuées et un message de succès ou d'erreur.
 
     Raises:
-        HTTPException: Si une erreur survient lors de la mise à jour ou de l'ajout de l'entrée de pays.
+        HTTPException:
+            - 422 (Unprocessable Entity): Si une erreur survient lors du filtrage par date.
 
     Example:
         Pour mettre à jour ou ajouter des données pour le pays "France" avec les données de pays suivantes :
