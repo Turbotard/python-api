@@ -1,9 +1,9 @@
 from fastapi import APIRouter, HTTPException
 from shared import cities_request_counts
 
-cities_statistics_router = APIRouter()
+statistics_cities_router = APIRouter()
 
-@cities_statistics_router.get("/cities/statistics")
+@statistics_cities_router.get("/statistics/cities")
 def stats():
     """
     Route qui affiche le nombre de requêtes faites pour chaque route.
