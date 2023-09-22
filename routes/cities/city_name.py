@@ -1,20 +1,19 @@
-from typing import Optional
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, HTTPException
 from shared import cities_request_counts, global_request_counts
 from connectiondb import get_database_connection
 
 cities_name_router = APIRouter()
 
 @cities_name_router.get(
-    "/countries/cities",
-    response_model=dict,
+    "/countries/cities/{name}",
+    response_model=dict,  # Ici, vous pouvez spécifier un modèle Pydantic pour une documentation plus précise
     responses={
         404: {"description": "Ville non trouvée"},
         422: {"description": "Erreur lors de la recherche de la ville ou paramètres non valides"},
         500: {"description": "Erreur interne du serveur"}
     }
 )
-def get_city_by_name(city_name: Optional[str] = Query(None, description="Le nom de la ville à rechercher.")):
+def get_city_by_name(name: str):
     """
     Récupère les détails d'une ville spécifiée par son nom.
 
@@ -23,7 +22,7 @@ def get_city_by_name(city_name: Optional[str] = Query(None, description="Le nom 
     Sinon, une exception HTTP 404 est levée.
 
     Args:
-        city_name (str, optional): Le nom de la ville à rechercher.
+        name (str): Le nom de la ville à rechercher.
 
     Returns:
         dict: Un dictionnaire contenant le code de la ville et son nom
@@ -34,9 +33,6 @@ def get_city_by_name(city_name: Optional[str] = Query(None, description="Le nom 
                        ou s'il y a une erreur pendant le processus de recherche.
     """
 
-    if city_name is None:
-        raise HTTPException(status_code=422, detail="Veuillez fournir un nom de ville.")
-
     try:
         cities_request_counts['name_entry'] += 1
         global_request_counts['Cities_name_entry'] += 1
@@ -46,15 +42,15 @@ def get_city_by_name(city_name: Optional[str] = Query(None, description="Le nom 
 
         # Utilisation de requêtes paramétrées pour éviter les injections SQL
         query = "SELECT * FROM cities WHERE name = %s"
-        cursor.execute(query, (city_name,))
+        cursor.execute(query, (name,))
 
-        data = cursor.fetchone()
+        data = cursor.fetchone()  # Récupère une seule entrée puisqu'on s'attend à ce qu'un nom de ville soit unique
 
         cursor.close()
         db.close()
 
         if not data:
-            raise HTTPException(status_code=404, detail=f"Ville nommée {city_name} non trouvée.")
+            raise HTTPException(status_code=404, detail=f"Ville nommée {name} non trouvée.")
 
         city_data = {'Code City': data[1], 'Name': data[3]}
 
