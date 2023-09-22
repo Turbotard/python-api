@@ -1,12 +1,17 @@
 from datetime import datetime
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, status
 from shared import weathers_request_counts, global_request_counts
 from connectiondb import get_database_connection
 
 weathers_date_router = APIRouter()
 
 
-@weathers_date_router.get("/countries/cities/weathers/{start_date}/{end_date}")
+@weathers_date_router.get("/countries/cities/weathers/{start_date}/{end_date}",
+          responses={
+              400: {"description": "Format incorrect"},
+              422: {"description": "Erreur lors du filtrage"},
+              500: {"description": "Erreur interne du serveur"}
+          })
 def filter_by_date(start_date: str, end_date: str, order: str = "asc"):
     """
     Filtre les données météorologiques par plage de dates.
@@ -19,9 +24,19 @@ def filter_by_date(start_date: str, end_date: str, order: str = "asc"):
         dict: Un dictionnaire contenant le nombre de requêtes traitées et une liste d'entrées de données comprises entre les dates spécifiées.
 
     Raises:
-        HTTPException: Si une erreur survient lors du filtrage par date.
+        HTTPException:
+            - 400 (Bad Request): Si les dates spécifiées sont dans un format incorrect.
+            - 422 (Unprocessable Entity): Si une erreur survient lors du filtrage par date.
+            - 500 (Internal Server Error): Si une erreur inattendue se produit.
     """
     try:
+        # Vérifiez si les dates sont au format correct
+        try:
+            datetime.strptime(start_date, '%Y-%m-%d')
+            datetime.strptime(end_date, '%Y-%m-%d')
+        except ValueError:
+            raise HTTPException(status_code=400, detail="Format de date incorrect. Utilisez 'YYYY-MM-DD'.")
+
         weathers_request_counts['filter_by_date'] += 1
         global_request_counts['Weathers_filter_by_date'] += 1
 
@@ -46,6 +61,9 @@ def filter_by_date(start_date: str, end_date: str, order: str = "asc"):
              'snow': row[6], 'snwd': row[7], 'awnd': row[8]} for row in data]
 
         return {"weathers_request_count": weathers_request_counts['filter_by_date'], "filtered_data": formatted_data}
+    except HTTPException as http_err:
+        # Capturez les exceptions HTTP personnalisées et réémettez-les telles quelles
+        raise http_err
     except Exception as e:
         error_message = f"Erreur lors du filtrage par date : {str(e)}"
-        raise HTTPException(status_code=422, detail=error_message)
+        raise HTTPException(status_code=500, detail=error_message)

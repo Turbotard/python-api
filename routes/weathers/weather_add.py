@@ -5,21 +5,13 @@ from schemas.weather_entry import WeatherEntry
 
 weathers_add_router = APIRouter()
 
-@weathers_add_router.post("/countries/cities/weathers/{name_city}")
+@weathers_add_router.post("/countries/cities/weathers/{name_city}", responses={
+        404: {"description": "Ville non trouvée"},
+        409: {"description": "Le relevé existe déjà pour cette ville"},
+        422: {"description": "Erreur lors de l'ajout du relevé ou paramètres non valides"},
+        500: {"description": "Erreur interne du serveur"}
+    })
 def add_entry(name_city: str, new_entry: WeatherEntry):
-    """
-    Ajoute une nouvelle entrée de données météorologiques.
-
-    Args:
-        name_city (str): Le nom de la ville associée à l'entrée météorologique.
-        new_entry (WeatherEntry): Les données de la nouvelle entrée.
-
-    Returns:
-        dict: Un dictionnaire contenant le nombre de requêtes traitées et un message de confirmation.
-
-    Raises:
-        HTTPException: Si une erreur survient lors de l'ajout de l'entrée.
-    """
     try:
         weathers_request_counts['add_entry'] += 1
         global_request_counts['Weathers_add_entry'] += 1
@@ -34,7 +26,17 @@ def add_entry(name_city: str, new_entry: WeatherEntry):
         city_id = cursor.fetchone()
 
         if city_id:
-            # Si l'ID de la ville existe, insérez les données dans la table weathers
+            # Vérifiez s'il existe déjà un relevé pour cette ville à cette date
+            query = """
+            SELECT id FROM weathers WHERE id_city = %s AND date = %s
+            """
+            cursor.execute(query, (city_id[0], new_entry.date))
+            existing_entry = cursor.fetchone()
+
+            if existing_entry:
+                raise HTTPException(status_code=409, detail="Un relevé existe déjà pour cette ville à cette date.")
+
+            # Si l'ID de la ville existe et qu'aucun relevé n'existe pour cette date, insérez les données
             query = """
             INSERT INTO weathers (id_city, date, tmin, tmax, prcp, snow, snwd, awnd)
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
@@ -56,9 +58,14 @@ def add_entry(name_city: str, new_entry: WeatherEntry):
             cursor.close()
             db.close()
 
-            return {"weathers_request_count": weathers_request_counts['add_entry'], "message": "Nouvelle entrée ajoutée avec succès!"}
+            return {"weathers_request_count": weathers_request_counts['add_entry'],
+                    "message": "Nouvelle entrée ajoutée avec succès!"}
         else:
             raise HTTPException(status_code=404, detail="Ville non trouvée dans la base de données.")
+    except HTTPException as http_exception:
+        # Si une HTTPException est levée, la renvoyer directement
+        raise http_exception
     except Exception as e:
+        # Si une autre exception inattendue se produit, renvoyer une HTTPException avec le détail de l'erreur
         error_message = f"Erreur lors de l'ajout de l'entrée : {str(e)}"
-        raise HTTPException(status_code=422, detail=error_message)
+        raise HTTPException(status_code=500, detail=error_message)
