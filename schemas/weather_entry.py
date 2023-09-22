@@ -6,6 +6,7 @@ class WeatherEntry(BaseModel):
     Modèle Pydantic pour la création et la mise à jour d'une entrée météorologique.
 
     Attributes:
+        id_city (Optional[int]): L'identifiant de la ville (facultatif).
         date (str): La date de l'entrée au format 'YYYY-MM-DD'.
         tmin (float): La température minimale en degrés Fahrenheit.
         tmax (float): La température maximale en degrés Fahrenheit.
