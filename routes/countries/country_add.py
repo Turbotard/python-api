@@ -3,10 +3,35 @@ from schemas.country_entry import CountryEntry
 from connectiondb import get_database_connection
 from shared import countries_request_counts, global_request_counts
 
-
 countries_add_router = APIRouter()
 
-@countries_add_router.post("/countries")
+
+@countries_add_router.post("/countries",
+                           response_model=dict,
+                           # Optionnel : Vous pouvez définir un modèle de réponse précis si nécessaire.
+                           responses={
+                               200: {
+                                   "description": "Entrée de pays ajoutée avec succès",
+                                   "content": {
+                                       "application/json": {
+                                           "example": {
+                                               "countries_request_count": 1,
+                                               "message": "Nouvelle entrée de pays ajoutée avec succès!"
+                                           }
+                                       }
+                                   }
+                               },
+                               422: {
+                                   "description": "Erreur lors de l'ajout de l'entrée de pays",
+                                   "content": {
+                                       "application/json": {
+                                           "example": {
+                                               "detail": "Erreur inattendue lors de l'ajout de l'entrée de pays."
+                                           }
+                                       }
+                                   }
+                               }
+                           })
 def add_country_entry(new_entry: CountryEntry):
     """
     Ajoute une nouvelle entrée de pays à la base de données.
@@ -41,7 +66,8 @@ def add_country_entry(new_entry: CountryEntry):
         cursor.close()
         db.close()
 
-        return {"countries_request_count": countries_request_counts['add_entry'], "message": "Nouvelle entrée de pays ajoutée avec succès!"}
+        return {"countries_request_count": countries_request_counts['add_entry'],
+                "message": "Nouvelle entrée de pays ajoutée avec succès!"}
     except Exception as e:
         error_message = f"Erreur lors de l'ajout de l'entrée de pays : {str(e)}"
         raise HTTPException(status_code=422, detail=error_message)
