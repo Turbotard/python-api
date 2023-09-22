@@ -1,9 +1,9 @@
 from fastapi import APIRouter, HTTPException
 from shared import countries_request_counts
 
-countries_statistics_router = APIRouter()
+statistics_countries_router = APIRouter()
 
-@countries_statistics_router.get("/countries/statistics")
+@statistics_countries_router.get("/statistics/countries/")
 def stats():
     """
     Route qui affiche le nombre de requêtes faites pour chaque route.
