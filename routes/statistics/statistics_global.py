@@ -26,6 +26,11 @@ def stats():
 
     Returns:
         dict: Un dictionnaire contenant les compteurs d'utilisation de chaque route.
+    Raises:
+        HTTPException:
+            - 404 (Not Found): Si les stats ne sont pas trouvées dans la base de données.
+            - 422 (Unprocessable Entity): Si une erreur survient lors du filtrage par précipitations.
+            - 500 (Internal Server Error): Si une erreur interne du serveur se produit.
     """
     try:
         return {
