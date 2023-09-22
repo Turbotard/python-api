@@ -5,7 +5,7 @@ from shared import countries_request_counts, global_request_counts
 countries_name_router = APIRouter()
 
 
-@countries_name_router.get("/countries/name/{name}",
+@countries_name_router.get("/countries/{name}",
                            response_model=dict,
                            # Optionnel : Vous pouvez définir un modèle de réponse précis si nécessaire.
                            responses={
